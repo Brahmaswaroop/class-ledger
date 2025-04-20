@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, View, StyleSheet, TouchableOpacity } from "react-native";
 import { Card, Text, IconButton, Menu } from "react-native-paper";
-import { db } from "./firebase";
-import { ref, get } from "firebase/database";
+import { getStudents, addStudent } from "@/app/DatabaseMethods"; // Adjust the import path as necessary
 import PopupExample from "@/components/EditPopup";
 
 const StudentsList = () => {
   const [students, setStudents] = useState({});
+  const fetchStudents = async () => {
+    const data = await getStudents();
+    setStudents(data);
+  };
 
   useEffect(() => {
-    const fetchStudents = async () => {
-      const snapshot = await get(ref(db, "Students"));
-      if (snapshot.exists()) {
-        setStudents(snapshot.val());
-      }
-    };
     fetchStudents();
   }, []);
 
@@ -22,17 +19,23 @@ const StudentsList = () => {
   const toggleExpand = (id) => {
     setExpandedId((prev) => (prev === id ? null : id));
   };
-
   const [showPopup, setShowPopup] = useState(false);
+  const [isNewStudent, setIsNewStudent] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showMenu, setShowMenu] = useState(null);
 
   return (
     <>
-      {showPopup && selectedStudent && (
+      {showPopup && (selectedStudent || isNewStudent) && (
         <PopupExample
+          IsNewEntry={isNewStudent}
           student={selectedStudent}
-          onClose={() => setShowPopup(false)}
+          onClose={() => {
+            setShowPopup(false);
+            setIsNewStudent(false);
+            setSelectedStudent(null);
+            fetchStudents();
+          }}
         />
       )}
 
@@ -41,29 +44,32 @@ const StudentsList = () => {
           <Card key={id} style={styles.card} onPress={() => toggleExpand(id)}>
             <Card.Title
               title={student.name}
-              left={(props) => (
-                <IconButton
-                  {...props}
-                  icon="account"
-                  onPress={() => {
-                    setSelectedStudent({ id, ...student });
-                    setShowPopup(true);
-                  }}
-                />
-              )}
+              titleStyle={styles.cardTitle}
+              left={(props) => <IconButton {...props} icon="account" />}
               right={(props) => (
                 <Menu
-                  visible={showMenu == id}
-                  onDismiss={() => setShowMenu(null)}
                   anchor={
                     <IconButton
                       {...props}
                       icon="dots-vertical"
-                      onPress={() => setShowMenu(id)}
+                      onPress={() => {
+                        setShowMenu(id);
+                      }}
                     />
                   }
+                  visible={showMenu == id}
+                  onDismiss={() => {
+                    setShowMenu(null);
+                  }}
                 >
-                  <Menu.Item onPress={() => {}} title="Edit" />
+                  <Menu.Item
+                    title="Edit"
+                    onPress={() => {
+                      setShowMenu(null);
+                      setSelectedStudent({ id, ...student });
+                      setShowPopup(true);
+                    }}
+                  />
                   <Menu.Item onPress={() => {}} title="Delete" />
                 </Menu>
               )}
@@ -77,6 +83,19 @@ const StudentsList = () => {
             )}
           </Card>
         ))}
+        <Card
+          style={styles.card}
+          onPress={() => {
+            setIsNewStudent(true);
+            setShowPopup(true);
+          }}
+        >
+          <Card.Title
+            titleStyle={styles.cardTitle}
+            title="Add Student"
+            left={(props) => <IconButton {...props} icon="plus" />}
+          />
+        </Card>
       </ScrollView>
     </>
   );
@@ -90,6 +109,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 12,
     elevation: 4,
+  },
+  cardTitle: {
+    padding: 10,
+    fontSize: 18,
+    fontWeight: "bold",
+    fontFamily: "calibri",
   },
   cardContent: {
     margin: 5,

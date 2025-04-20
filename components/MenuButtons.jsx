@@ -22,13 +22,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#00AEEF",
     borderRadius: 10,
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
   },
   buttonText: {
     fontSize: 16,

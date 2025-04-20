@@ -7,11 +7,15 @@ export default function App() {
   return (
     <>
       <View style={styles.container}>
-        <Image source={require("../assets/banner.jpg")} style={styles.banner} />
+        <Image
+          source={require("../assets/banner.jpg")}
+          style={styles.banner}
+          resizeMode="cover"
+        />
         <View style={styles.buttonsContainer}>
-          <MenuButtons title="Attendance" link="/attendance_manager" />
-          <MenuButtons title="Student details" link="/attendance" />
-          <MenuButtons title="Fees Ledger" link="/userForm" />
+          <MenuButtons title="Attendance" link="" />
+          <MenuButtons title="Student details" link="/student_records" />
+          <MenuButtons title="Fees Ledger" link="" />
         </View>
       </View>
     </>
@@ -29,7 +33,6 @@ const styles = StyleSheet.create({
     height: 200,
     width: "100%",
     borderRadius: 20,
-    resizeMode: "cover",
   },
   buttonsContainer: {
     backgroundColor: "#fff",
@@ -37,12 +40,6 @@ const styles = StyleSheet.create({
     borderTopColor: "#e5e5e5",
     padding: 10,
     borderRadius: 8,
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.35,
-    shadowRadius: 8,
-    elevation: 5,
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
   },
 });
