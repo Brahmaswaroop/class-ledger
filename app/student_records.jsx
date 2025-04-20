@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, View, StyleSheet, TouchableOpacity } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { Card, Text, IconButton, Menu } from "react-native-paper";
-import { getStudents, addStudent } from "@/app/DatabaseMethods"; // Adjust the import path as necessary
+import { getStudents, deleteStudent } from "@/app/DatabaseMethods"; // Adjust the import path as necessary
 import PopupExample from "@/components/EditPopup";
 
 const StudentsList = () => {
@@ -34,6 +34,8 @@ const StudentsList = () => {
             setShowPopup(false);
             setIsNewStudent(false);
             setSelectedStudent(null);
+          }}
+          onSave={async () => {
             fetchStudents();
           }}
         />
@@ -70,15 +72,23 @@ const StudentsList = () => {
                       setShowPopup(true);
                     }}
                   />
-                  <Menu.Item onPress={() => {}} title="Delete" />
+                  <Menu.Item
+                    onPress={() => {
+                      deleteStudent(id);
+                    }}
+                    title="Delete"
+                  />
                 </Menu>
               )}
             />
             {expandedId === id && (
               <Card.Content>
                 <Text style={styles.cardContent}>ID: {id}</Text>
-                <Text style={styles.cardContent}>Age: {student.age}</Text>
-                <Text style={styles.cardContent}>Class: {student.class}</Text>
+                {Object.entries(student).map(([key, value]) => (
+                  <Text key={id + key} style={styles.cardContent}>
+                    {key}: {value}
+                  </Text>
+                ))}
               </Card.Content>
             )}
           </Card>

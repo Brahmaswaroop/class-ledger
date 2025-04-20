@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import { Dialog, Portal, TextInput, Button } from "react-native-paper";
 import { addStudent, updateStudent } from "@/app/DatabaseMethods";
 
-const PopupExample = ({ student, onClose, IsNewEntry }) => {
+const PopupExample = ({ student, onClose, onSave, IsNewEntry }) => {
   if (IsNewEntry) {
     student = {};
   }
@@ -69,7 +69,14 @@ const PopupExample = ({ student, onClose, IsNewEntry }) => {
         </Dialog.Content>
         <Dialog.Actions>
           <Button onPress={onClose}>Cancel</Button>
-          <Button onPress={handleSave}>Save</Button>
+          <Button
+            onPress={() => {
+              handleSave();
+              onSave();
+            }}
+          >
+            Save
+          </Button>
         </Dialog.Actions>
       </Dialog>
     </Portal>
