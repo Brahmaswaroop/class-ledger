@@ -8,7 +8,7 @@ export default function App() {
     <>
       <View style={styles.container}>
         <Image
-          source={require("../assets/banner.jpg")}
+          source={require("@/assets/Class ledger.png")}
           style={styles.banner}
           resizeMode="cover"
         />

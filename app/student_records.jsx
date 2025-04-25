@@ -3,6 +3,8 @@ import { ScrollView, StyleSheet } from "react-native";
 import { Card, Text, IconButton, Menu } from "react-native-paper";
 import { getStudents, deleteStudent } from "@/app/DatabaseMethods"; // Adjust the import path as necessary
 import PopupExample from "@/components/EditPopup";
+import DeleteConfirmPopup from "@/components/DeleteConfirmPopup";
+import { router } from "expo-router";
 
 const StudentsList = () => {
   const [students, setStudents] = useState({});
@@ -21,12 +23,13 @@ const StudentsList = () => {
   };
   const [showPopup, setShowPopup] = useState(false);
   const [isNewStudent, setIsNewStudent] = useState(false);
+  const [isDeleteStudent, setIsDeleteStudent] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showMenu, setShowMenu] = useState(null);
 
   return (
     <>
-      {showPopup && (selectedStudent || isNewStudent) && (
+      {showPopup && (selectedStudent || isNewStudent) && !isDeleteStudent && (
         <PopupExample
           IsNewEntry={isNewStudent}
           student={selectedStudent}
@@ -37,6 +40,17 @@ const StudentsList = () => {
           }}
           onSave={async () => {
             fetchStudents();
+            router.push("/student_records");
+          }}
+        />
+      )}
+
+      {showPopup && isDeleteStudent && (
+        <DeleteConfirmPopup
+          student={selectedStudent}
+          onClose={() => {
+            setShowPopup(false);
+            setIsDeleteStudent(false);
           }}
         />
       )}
@@ -74,7 +88,10 @@ const StudentsList = () => {
                   />
                   <Menu.Item
                     onPress={() => {
-                      deleteStudent(id);
+                      setShowMenu(null);
+                      setSelectedStudent({ id, ...student });
+                      setIsDeleteStudent(true);
+                      setShowPopup(true);
                     }}
                     title="Delete"
                   />
