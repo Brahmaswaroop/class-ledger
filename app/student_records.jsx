@@ -38,10 +38,6 @@ const StudentsList = () => {
             setIsNewStudent(false);
             setSelectedStudent(null);
           }}
-          onSave={async () => {
-            fetchStudents();
-            router.push("/student_records");
-          }}
         />
       )}
 
