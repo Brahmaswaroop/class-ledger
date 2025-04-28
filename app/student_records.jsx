@@ -39,18 +39,22 @@ const StudentsList = () => {
       {showInputPopup && (selectedStudent || isNewStudent) && (
         <EditPopup
           IsNewEntry={isNewStudent}
+          studentsList={students}
           student={selectedStudent}
           onClose={() => {
             setShowInputPopup(false);
             setIsNewStudent(false);
             setSelectedStudent(null);
           }}
-          onSave={() => {}}
+          onSave={(updatedStudentsList) => {
+            setStudents(updatedStudentsList);
+          }}
         />
       )}
 
       {showDeletePopup && (
         <DeleteConfirmPopup
+          studentsList={students}
           student={selectedStudent}
           onClose={() => {
             setShowDeletePopup(false);

@@ -1,47 +1,36 @@
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import { Dialog, Portal, TextInput, Button } from "react-native-paper";
-import { addStudent, updateStudent } from "@/app/DatabaseMethods";
 
-const EditPopup = ({ student, onClose, onSave, IsNewEntry }) => {
-  if (IsNewEntry) {
-    student = {};
-  }
-  const [studentDetails, setStudentDetails] = useState({
-    name: student.name || "",
-    age: student.age?.toString() || "",
-    class: student.class || "",
-    dateOfJoining: student.dateOfJoining || "",
-  });
+const newStudentId = (studentsList) => {
+  const studentCount = studentsList ? Object.keys(studentsList).at(-1) : 0;
+  const studentCountNum = studentCount ? parseInt(studentCount.slice(3)) : 0;
+  return `STD${String(studentCountNum + 1).padStart(3, "0")}`;
+};
 
-  const setName = (name) => setStudentDetails((prev) => ({ ...prev, name }));
-  const setAge = (age) => setStudentDetails((prev) => ({ ...prev, age }));
-  const setClassName = (className) =>
-    setStudentDetails((prev) => ({ ...prev, class: className }));
-  const setDateOfJoining = (dateOfJoining) =>
-    setStudentDetails((prev) => ({ ...prev, dateOfJoining }));
+const addStudent = (studentsList, studentDetails) => {
+  const studentId = newStudentId(studentsList);
+  return { ...studentsList, [studentId]: studentDetails }; // RETURN a NEW object
+};
+
+const updateStudent = (studentsList, studentDetails) => {
+  return { ...studentsList, [studentDetails.id]: studentDetails }; // RETURN a NEW object
+};
+
+const EditPopup = ({ studentsList, student, onClose, onSave, IsNewEntry }) => {
+  const [studentDetails, setStudentDetails] = useState(
+    IsNewEntry ? {} : student
+  );
 
   const handleSave = () => {
-    if (studentDetails.name.length < 3) {
-      styles.name = { ...styles.name, borderColor: "red" };
-      return;
-    } else if (parseInt(studentDetails.age) < 1) {
-      styles.age = { ...styles.age, borderColor: "red" };
-      return;
-    } else if (studentDetails.class.length === "") {
-      styles.class = { ...styles.class, borderColor: "red" };
-      return;
-    } else if (studentDetails.dateOfJoining.length === "") {
-      styles.dateOfJoining = { ...styles.dateOfJoining, borderColor: "red" };
-      return;
+    let updatedStudentsList;
+    if (IsNewEntry) {
+      updatedStudentsList = addStudent(studentsList, studentDetails);
     } else {
-      if (IsNewEntry) {
-        addStudent(studentDetails);
-      } else {
-        updateStudent(student.id, studentDetails);
-      }
-      onClose();
+      updatedStudentsList = updateStudent(studentsList, studentDetails);
     }
+    onSave(updatedStudentsList);
+    onClose();
   };
   return (
     <Portal>
@@ -53,14 +42,18 @@ const EditPopup = ({ student, onClose, onSave, IsNewEntry }) => {
           <TextInput
             label="Name"
             value={studentDetails.name}
-            onChangeText={setName}
+            onChangeText={(text) =>
+              setStudentDetails((prev) => ({ ...prev, name: text }))
+            }
             mode="outlined"
             style={styles.name}
           />
           <TextInput
             label="Age"
             value={studentDetails.age}
-            onChangeText={setAge}
+            onChangeText={(text) =>
+              setStudentDetails((prev) => ({ ...prev, age: text }))
+            }
             keyboardType="numeric"
             mode="outlined"
             style={styles.age}
@@ -68,14 +61,18 @@ const EditPopup = ({ student, onClose, onSave, IsNewEntry }) => {
           <TextInput
             label="Class"
             value={studentDetails.class}
-            onChangeText={setClassName}
+            onChangeText={(text) =>
+              setStudentDetails((prev) => ({ ...prev, class: text }))
+            }
             mode="outlined"
             style={styles.class}
           />
           <TextInput
             label="Date of Joining"
             value={studentDetails.dateOfJoining}
-            onChangeText={setDateOfJoining}
+            onChangeText={(text) =>
+              setStudentDetails((prev) => ({ ...prev, dateOfJoining: text }))
+            }
             mode="outlined"
             style={styles.dateOfJoining}
           />
@@ -85,7 +82,7 @@ const EditPopup = ({ student, onClose, onSave, IsNewEntry }) => {
           <Button
             onPress={() => {
               handleSave();
-              onSave();
+              onClose();
             }}
           >
             Save
@@ -100,5 +97,4 @@ export default EditPopup;
 
 const styles = StyleSheet.create({
   text: { marginBottom: 10 },
-  name: { ...this.text },
 });
