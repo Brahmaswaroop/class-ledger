@@ -1,14 +1,14 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, StyleSheet, Image, ScrollView } from "react-native";
 import { MenuButtons } from "@/components/MenuButtons";
 
 export default function App() {
   console.log("App component rendered");
   return (
     <>
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <Image
-          source={require("@/assets/Class ledger.png")}
+          source={require("@/assets/Class ledger.jpg")}
           style={styles.banner}
           resizeMode="cover"
         />
@@ -17,7 +17,7 @@ export default function App() {
           <MenuButtons title="Student details" link="/student_records" />
           <MenuButtons title="Fees Ledger" link="" />
         </View>
-      </View>
+      </ScrollView>
     </>
   );
 }
