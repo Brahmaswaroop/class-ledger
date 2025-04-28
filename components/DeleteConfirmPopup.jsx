@@ -1,10 +1,14 @@
 import React from "react";
-import { router } from "expo-router";
 import { Text } from "react-native";
 import { Dialog, Portal, Button } from "react-native-paper";
 import { deleteStudent } from "@/app/DatabaseMethods"; // Adjust the import path as necessary
 
-const DeleteConfirmPopup = ({ student, onClose }) => {
+const DeleteConfirmPopup = ({ student, onClose, onDelete }) => {
+  const handleDelete = () => {
+    deleteStudent(student.id);
+    onClose();
+  };
+
   return (
     <Portal>
       <Dialog visible onDismiss={onClose}>
@@ -18,9 +22,8 @@ const DeleteConfirmPopup = ({ student, onClose }) => {
           <Button onPress={onClose}>Cancel</Button>
           <Button
             onPress={() => {
-              deleteStudent(student.id);
-              router.push("/student_records");
-              onClose();
+              handleDelete();
+              onDelete(); // Call the onDelete callback to refresh the list
             }}
           >
             Delete
