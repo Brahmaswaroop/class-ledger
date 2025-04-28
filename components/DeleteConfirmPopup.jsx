@@ -1,11 +1,17 @@
 import React from "react";
 import { Text } from "react-native";
 import { Dialog, Portal, Button } from "react-native-paper";
-import { deleteStudent } from "@/app/DatabaseMethods"; // Adjust the import path as necessary
 
-const DeleteConfirmPopup = ({ student, onClose, onDelete }) => {
+const deleteStudent = (studentsList, student) => {
+  const updatedStudentsList = { ...studentsList };
+  delete updatedStudentsList[student.id];
+  return updatedStudentsList; // RETURN a NEW object
+};
+
+const DeleteConfirmPopup = ({ studentsList, student, onClose, onDelete }) => {
   const handleDelete = () => {
-    deleteStudent(student.id);
+    let updatedStudentsList = deleteStudent(studentsList, student);
+    onDelete(updatedStudentsList);
     onClose();
   };
 
@@ -16,14 +22,15 @@ const DeleteConfirmPopup = ({ student, onClose, onDelete }) => {
           <Text>Delete Confirmation</Text>
         </Dialog.Title>
         <Dialog.Content>
-          <Text>Are you sure you want to delete this student?</Text>
+          <Text>
+            Are you sure you want to delete the student {student.name}?
+          </Text>
         </Dialog.Content>
         <Dialog.Actions>
           <Button onPress={onClose}>Cancel</Button>
           <Button
             onPress={() => {
               handleDelete();
-              onDelete(); // Call the onDelete callback to refresh the list
             }}
           >
             Delete

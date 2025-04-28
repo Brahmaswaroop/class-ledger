@@ -10,11 +10,7 @@ const StudentsList = () => {
   const [students, setStudents] = useState({});
   const fetchStudents = async () => {
     const data = await getStudents();
-    if (data) {
-      setStudents(data);
-    } else {
-      setStudents({});
-    }
+    setStudents(data || {});
   };
   useEffect(() => {
     fetchStudents();
@@ -27,7 +23,7 @@ const StudentsList = () => {
   // Handle the menu item click
   const [expandedId, setExpandedId] = useState(null);
   const toggleExpand = (id) => {
-    setExpandedId((prev) => (prev === id ? null : id));
+    setExpandedId(expandedId === id ? null : id);
   };
 
   // Part 3: Handling the student data
@@ -60,7 +56,9 @@ const StudentsList = () => {
             setShowDeletePopup(false);
             setSelectedStudent(null);
           }}
-          onDelete={() => {}}
+          onDelete={(updatedStudentsList) => {
+            setStudents(updatedStudentsList);
+          }}
         />
       )}
 
