@@ -2,52 +2,61 @@ import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { Card, Text, IconButton, Menu } from "react-native-paper";
 import { getStudents, deleteStudent } from "@/app/DatabaseMethods"; // Adjust the import path as necessary
-import PopupExample from "@/components/EditPopup";
+import EditPopup from "@/components/EditPopup";
 import DeleteConfirmPopup from "@/components/DeleteConfirmPopup";
-import { router } from "expo-router";
 
 const StudentsList = () => {
+  // Part 1: Fetching the students data
   const [students, setStudents] = useState({});
   const fetchStudents = async () => {
     const data = await getStudents();
-    setStudents(data);
+    if (data) {
+      setStudents(data);
+    } else {
+      setStudents({});
+    }
   };
-
   useEffect(() => {
     fetchStudents();
   }, []);
 
+  // Part 2: Handling the menu and popups
+  const [showMenu, setShowMenu] = useState(null);
+  const [showInputPopup, setShowInputPopup] = useState(false);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  // Handle the menu item click
   const [expandedId, setExpandedId] = useState(null);
   const toggleExpand = (id) => {
     setExpandedId((prev) => (prev === id ? null : id));
   };
-  const [showPopup, setShowPopup] = useState(false);
+
+  // Part 3: Handling the student data
   const [isNewStudent, setIsNewStudent] = useState(false);
-  const [isDeleteStudent, setIsDeleteStudent] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [showMenu, setShowMenu] = useState(null);
 
   return (
     <>
-      {showPopup && (selectedStudent || isNewStudent) && !isDeleteStudent && (
-        <PopupExample
+      {showInputPopup && (selectedStudent || isNewStudent) && (
+        <EditPopup
           IsNewEntry={isNewStudent}
           student={selectedStudent}
           onClose={() => {
-            setShowPopup(false);
+            setShowInputPopup(false);
             setIsNewStudent(false);
             setSelectedStudent(null);
           }}
+          onSave={() => {}}
         />
       )}
 
-      {showPopup && isDeleteStudent && (
+      {showDeletePopup && (
         <DeleteConfirmPopup
           student={selectedStudent}
           onClose={() => {
-            setShowPopup(false);
-            setIsDeleteStudent(false);
+            setShowDeletePopup(false);
+            setSelectedStudent(null);
           }}
+          onDelete={() => {}}
         />
       )}
 
@@ -79,15 +88,14 @@ const StudentsList = () => {
                     onPress={() => {
                       setShowMenu(null);
                       setSelectedStudent({ id, ...student });
-                      setShowPopup(true);
+                      setShowInputPopup(true);
                     }}
                   />
                   <Menu.Item
                     onPress={() => {
                       setShowMenu(null);
                       setSelectedStudent({ id, ...student });
-                      setIsDeleteStudent(true);
-                      setShowPopup(true);
+                      setShowDeletePopup(true);
                     }}
                     title="Delete"
                   />
@@ -110,7 +118,7 @@ const StudentsList = () => {
           style={styles.card}
           onPress={() => {
             setIsNewStudent(true);
-            setShowPopup(true);
+            setShowInputPopup(true);
           }}
         >
           <Card.Title
