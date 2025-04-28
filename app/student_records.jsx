@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { Card, Text, IconButton, Menu } from "react-native-paper";
-import { getStudents, setAllStudents } from "@/components/DatabaseMethods"; // Adjust the import path as necessary
+import { getAllStudents, setAllStudents } from "@/components/DatabaseMethods"; // Adjust the import path as necessary
 import EditPopup from "@/components/EditPopup";
 import DeleteConfirmPopup from "@/components/DeleteConfirmPopup";
 
@@ -9,7 +9,7 @@ const StudentsList = () => {
   // Part 1: Fetching the students data
   const [students, setStudents] = useState({});
   const fetchStudents = async () => {
-    const data = await getStudents();
+    const data = await getAllStudents();
     setStudents(data || {});
   };
   useEffect(() => {
