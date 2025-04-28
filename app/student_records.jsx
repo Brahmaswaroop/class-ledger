@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { Card, Text, IconButton, Menu } from "react-native-paper";
-import { getStudents, setAllStudents } from "@/app/DatabaseMethods"; // Adjust the import path as necessary
+import { getStudents, setAllStudents } from "@/components/DatabaseMethods"; // Adjust the import path as necessary
 import EditPopup from "@/components/EditPopup";
 import DeleteConfirmPopup from "@/components/DeleteConfirmPopup";
 

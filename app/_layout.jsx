@@ -31,10 +31,6 @@ export default function RootLayout() {
             },
           }}
         />
-        <Stack.Screen
-          name="attendance_manager"
-          options={{ title: "Attendance Manager" }}
-        />
       </Stack>
     </PaperProvider>
   );
