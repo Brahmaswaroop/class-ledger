@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import { Dialog, Portal, TextInput, Button } from "react-native-paper";
 import { addStudent, updateStudent } from "@/app/DatabaseMethods";
 
-const PopupExample = ({ student, onClose, onSave, IsNewEntry }) => {
+const EditPopup = ({ student, onClose, onSave, IsNewEntry }) => {
   if (IsNewEntry) {
     student = {};
   }
@@ -22,14 +22,27 @@ const PopupExample = ({ student, onClose, onSave, IsNewEntry }) => {
     setStudentDetails((prev) => ({ ...prev, dateOfJoining }));
 
   const handleSave = () => {
-    if (IsNewEntry) {
-      addStudent(studentDetails);
+    if (studentDetails.name.length < 3) {
+      styles.name = { ...styles.name, borderColor: "red" };
+      return;
+    } else if (parseInt(studentDetails.age) < 1) {
+      styles.age = { ...styles.age, borderColor: "red" };
+      return;
+    } else if (studentDetails.class.length === "") {
+      styles.class = { ...styles.class, borderColor: "red" };
+      return;
+    } else if (studentDetails.dateOfJoining.length === "") {
+      styles.dateOfJoining = { ...styles.dateOfJoining, borderColor: "red" };
+      return;
     } else {
-      updateStudent(student.id, studentDetails);
+      if (IsNewEntry) {
+        addStudent(studentDetails);
+      } else {
+        updateStudent(student.id, studentDetails);
+      }
+      onClose();
     }
-    onClose();
   };
-
   return (
     <Portal>
       <Dialog visible onDismiss={onClose}>
@@ -42,7 +55,7 @@ const PopupExample = ({ student, onClose, onSave, IsNewEntry }) => {
             value={studentDetails.name}
             onChangeText={setName}
             mode="outlined"
-            style={styles.text}
+            style={styles.name}
           />
           <TextInput
             label="Age"
@@ -50,21 +63,21 @@ const PopupExample = ({ student, onClose, onSave, IsNewEntry }) => {
             onChangeText={setAge}
             keyboardType="numeric"
             mode="outlined"
-            style={styles.text}
+            style={styles.age}
           />
           <TextInput
             label="Class"
             value={studentDetails.class}
             onChangeText={setClassName}
             mode="outlined"
-            style={styles.text}
+            style={styles.class}
           />
           <TextInput
             label="Date of Joining"
             value={studentDetails.dateOfJoining}
             onChangeText={setDateOfJoining}
             mode="outlined"
-            style={styles.text}
+            style={styles.dateOfJoining}
           />
         </Dialog.Content>
         <Dialog.Actions>
@@ -83,8 +96,9 @@ const PopupExample = ({ student, onClose, onSave, IsNewEntry }) => {
   );
 };
 
-export default PopupExample;
+export default EditPopup;
 
 const styles = StyleSheet.create({
   text: { marginBottom: 10 },
+  name: { ...this.text },
 });

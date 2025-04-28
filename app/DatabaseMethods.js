@@ -37,9 +37,10 @@ export const addStudent = async (studentData) => {
   try {
     const existingStudents = await getStudents();
     const studentCount = existingStudents
-      ? Object.keys(existingStudents).length
+      ? Object.keys(existingStudents).at(-1)
       : 0;
-    const studentId = `STD${String(studentCount + 1).padStart(3, "0")}`;
+    const studentCountNum = studentCount ? parseInt(studentCount.slice(3)) : 0;
+    const studentId = `STD${String(studentCountNum + 1).padStart(3, "0")}`;
     await set(studentRef(studentId), studentData);
     return 1;
   } catch (error) {
