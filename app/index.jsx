@@ -13,7 +13,7 @@ export default function App() {
           resizeMode="cover"
         />
         <View style={styles.buttonsContainer}>
-          <MenuButtons title="Attendance" link="" />
+          <MenuButtons title="Attendance" link="/attendance_records" />
           <MenuButtons title="Student details" link="/student_records" />
           <MenuButtons title="Fees Ledger" link="" />
         </View>
