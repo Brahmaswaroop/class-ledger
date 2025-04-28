@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { Card, Text, IconButton, Menu } from "react-native-paper";
-import { getStudents, deleteStudent } from "@/app/DatabaseMethods"; // Adjust the import path as necessary
+import { getStudents, setAllStudents } from "@/app/DatabaseMethods"; // Adjust the import path as necessary
 import EditPopup from "@/components/EditPopup";
 import DeleteConfirmPopup from "@/components/DeleteConfirmPopup";
 
@@ -16,11 +16,25 @@ const StudentsList = () => {
     fetchStudents();
   }, []);
 
+  const uploadStudents = async () => {
+    console.log(students);
+    if (Object.keys(students).length === 0) {
+      console.log("No students to upload.");
+      return;
+    } else {
+      const result = await setAllStudents(students);
+      console.log("Upload result:", result);
+    }
+  };
+
+  useEffect(() => {
+    uploadStudents();
+  }, [students]);
+
   // Part 2: Handling the menu and popups
   const [showMenu, setShowMenu] = useState(null);
   const [showInputPopup, setShowInputPopup] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
-  // Handle the menu item click
   const [expandedId, setExpandedId] = useState(null);
   const toggleExpand = (id) => {
     setExpandedId(expandedId === id ? null : id);

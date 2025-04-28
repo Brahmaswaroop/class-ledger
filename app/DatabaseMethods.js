@@ -23,12 +23,12 @@ export const getStudents = async () => {
   }
 };
 
-export const getStudentById = async (studentId) => {
-  const snapshot = await get(studentRef(studentId));
-  if (snapshot.exists()) {
-    return snapshot.val();
-  } else {
-    console.log("No data available");
+export const setAllStudents = async (data) => {
+  try {
+    await set(ref(db, "Students/"), data);
+    return 1;
+  } catch (error) {
+    console.error("Error setting all students:", error);
     return null;
   }
 };
