@@ -1,20 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { Calendar } from "react-native-calendars";
 
-const AttendanceCalendar = (attendanceMarkedDates, handleDate) => {
+const AttendanceCalender = ({ attendanceMarkedDates, handleDate }) => {
   const [markedDates, setMarkedDates] = useState({});
-  setMarkedDates(attendanceMarkedDates);
-  for (let index = 0; index < Object.keys(markedDates).length; index++) {
-    date = Object.keys(markedDates).at(index);
-    setMarkedDates((prev) => ({
-      ...prev,
-      [date]: {
+
+  useEffect(() => {
+    const formatted = {};
+    Object.keys(attendanceMarkedDates).forEach((date) => {
+      formatted[date] = {
         selected: true,
         selectedColor: "green", // Change color if needed
-      },
-    }));
-  }
+      };
+    });
+    setMarkedDates(formatted);
+  }, [markedDates]);
 
   const handleDayPress = (day) => {
     const date = day.dateString;
@@ -28,4 +28,4 @@ const AttendanceCalendar = (attendanceMarkedDates, handleDate) => {
   );
 };
 
-export default AttendanceCalendar;
+export default AttendanceCalender;

@@ -1,7 +1,7 @@
 import { db } from "./firebase";
 import { ref, set, get, update, remove } from "firebase/database";
 
-export const getAllData = async () => {
+export const fetchAllData = async () => {
   const snapshot = await get(ref(db));
   if (snapshot.exists()) {
     return snapshot.val();
@@ -13,7 +13,7 @@ export const getAllData = async () => {
 
 const studentRef = (id = "") => ref(db, `Students/${id}`);
 
-export const getAllStudents = async () => {
+export const fetchAllStudents = async () => {
   const snapshot = await get(studentRef());
   if (snapshot.exists()) {
     return snapshot.val();
@@ -23,7 +23,7 @@ export const getAllStudents = async () => {
   }
 };
 
-export const setAllStudents = async (data) => {
+export const uploadAllStudents = async (data) => {
   try {
     await set(ref(db, "Students/"), data);
     return 1;
@@ -33,11 +33,11 @@ export const setAllStudents = async (data) => {
   }
 };
 
-const attendanceDatesRef = ref(db, "Attendance/Dates");
+const attendanceDatesRef = ref(db, "Attendance/MarkedDates");
 const studentAttendanceRef = ref(db, "Attendance/StudentAttendance");
 
-export const getAttendanceDates = async () => {
-  const snapshot = await get(attendanceDatesRef());
+export const fetchAttendanceDates = async () => {
+  const snapshot = await get(attendanceDatesRef);
   if (snapshot.exists()) {
     return snapshot.val();
   } else {
@@ -46,7 +46,7 @@ export const getAttendanceDates = async () => {
   }
 };
 
-export const getStudentAttendances = async () => {
+export const fetchStudentAttendances = async () => {
   const snapshot = await get(studentAttendanceRef);
   if (snapshot.exists()) {
     return snapshot.val();
@@ -56,7 +56,7 @@ export const getStudentAttendances = async () => {
   }
 };
 
-export const setAttendanceDates = async (data) => {
+export const uploadAttendanceDates = async (data) => {
   try {
     await set(attendanceDatesRef, data);
     return 1;
@@ -66,7 +66,7 @@ export const setAttendanceDates = async (data) => {
   }
 };
 
-export const setStudentAttendances = async (data) => {
+export const uploadStudentAttendances = async (data) => {
   try {
     await set(studentAttendanceRef, data);
     return 1;

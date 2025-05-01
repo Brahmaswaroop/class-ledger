@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { Card, Text, IconButton, Menu } from "react-native-paper";
-import { getAllStudents, setAllStudents } from "@/components/DatabaseMethods"; // Adjust the import path as necessary
+import {
+  fetchAllStudents,
+  uploadAllStudents,
+} from "@/components/DatabaseMethods"; // Adjust the import path as necessary
 import EditPopup from "@/components/EditPopup";
 import DeleteConfirmPopup from "@/components/DeleteConfirmPopup";
 
@@ -9,7 +12,7 @@ const StudentsList = () => {
   // Part 1: Fetching the students data
   const [students, setStudents] = useState({});
   const fetchStudents = async () => {
-    const data = await getAllStudents();
+    const data = await fetchAllStudents();
     setStudents(data || {});
   };
   useEffect(() => {
@@ -18,15 +21,11 @@ const StudentsList = () => {
 
   const uploadStudents = async () => {
     console.log(students);
-    if (Object.keys(students).length === 0) {
-      console.log("No students to upload.");
-      return;
-    } else {
-      const result = await setAllStudents(students);
+    if (Object.keys(students).length > 0) {
+      const result = await uploadAllStudents(students);
       console.log("Upload result:", result);
     }
   };
-
   useEffect(() => {
     uploadStudents();
   }, [students]);
