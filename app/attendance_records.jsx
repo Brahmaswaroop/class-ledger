@@ -1,22 +1,27 @@
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { View, ScrollView, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import AttendanceCalender from "@/components/AttendanceCalender";
 import {
+  fetchAllStudents,
   fetchAttendanceDates,
   fetchStudentAttendances,
   uploadAttendanceDates,
   uploadStudentAttendances,
 } from "@/components/DatabaseMethods";
+import StudentButtons from "@/components/StudentButtons";
 
 const attendance_records = () => {
   const [attendanceDates, setAttendanceDates] = useState({});
   const [studentAttendance, setStudentAttendance] = useState({});
+  const [students, setStudents] = useState({});
 
   const fetchData = async () => {
     const data1 = await fetchAttendanceDates();
     setAttendanceDates(data1 || {});
     const data2 = await fetchStudentAttendances();
     setStudentAttendance(data2 || {});
+    const students = await fetchAllStudents();
+    setStudents(students || {});
   };
   useEffect(() => {
     fetchData();
@@ -51,6 +56,24 @@ const attendance_records = () => {
               }));
             }}
           />
+        </View>
+        <View style={styles.container}>
+          {Object.entries(students).map(([id, student]) => (
+            <StudentButtons
+              IdOfStudent={id}
+              title={student.name}
+              onPress={(studentId, presentState) => {
+                if (presentState) {
+                  setStudentAttendance((prev) => {
+                    dates = prev[studentId] || []
+                    updatedDates = presentState ? [...dates, selectedDate] :
+                  })
+                } else {
+                  studentAttendance[id].remove(selectedDate);
+                }
+              }}
+            ></StudentButtons>
+          ))}
         </View>
       </ScrollView>
     </>
