@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet, Image, ScrollView } from "react-native";
-import { MenuButtons } from "@/components/MenuButtons";
+import MenuButtons from "@/components/buttons/MenuButtons";
 
 export default function App() {
   console.log("App component rendered");

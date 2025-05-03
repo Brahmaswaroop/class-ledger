@@ -1,22 +1,22 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 
-export default function StudentButtons({ IdOfStudent, title, onPress }) {
-  const [studentId, setStudentId] = useState(null);
-  const [presentState, setPresentState] = useState(false);
-  useEffect(() => {
-    setStudentId(IdOfStudent);
-  }, []);
+export default function StudentButtons({
+  IdOfStudent,
+  presentState = false,
+  title,
+  onPress,
+}) {
   const handlePress = () => {
-    setPresentState((prev) => !prev);
-    onPress(studentId, presentState);
+    const newPresentState = !presentState;
+    onPress(IdOfStudent, newPresentState);
   };
   return (
     <View>
       <TouchableOpacity
         style={[
           styles.menuButtons,
-          { backgroundColor: presentState ? "50C878" : "#FEFEFA" },
+          { backgroundColor: presentState ? "#03C03C" : "#FEFEFA" },
         ]}
         onPress={() => handlePress()}
       >
@@ -28,7 +28,8 @@ export default function StudentButtons({ IdOfStudent, title, onPress }) {
 const styles = StyleSheet.create({
   menuButtons: {
     padding: 18,
-    marginBottom: 20,
+    marginTop: 10,
+    marginBottom: 10,
     alignItems: "center",
     borderRadius: 10,
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
@@ -37,6 +38,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
     fontFamily: "Arial",
-    color: "#eeeeee",
+    color: "#000",
   },
 });

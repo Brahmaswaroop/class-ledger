@@ -8,21 +8,25 @@ import {
   uploadAttendanceDates,
   uploadStudentAttendances,
 } from "@/components/DatabaseMethods";
-import StudentButtons from "@/components/StudentButtons";
+import StudentButtons from "@/components/buttons/StudentButtons";
+import ActionButton from "@/components/buttons/ActionButton";
 
-const attendance_records = () => {
+const AttendanceRecords = () => {
   const [attendanceDates, setAttendanceDates] = useState({});
   const [studentAttendance, setStudentAttendance] = useState({});
   const [students, setStudents] = useState({});
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const fetchData = async () => {
     const data1 = await fetchAttendanceDates();
     setAttendanceDates(data1 || {});
     const data2 = await fetchStudentAttendances();
     setStudentAttendance(data2 || {});
-    const students = await fetchAllStudents();
-    setStudents(students || {});
+    const studentsData = await fetchAllStudents();
+    setStudents(studentsData || {});
+    console.log("Fetched students:", studentsData);
   };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -30,67 +34,93 @@ const attendance_records = () => {
   const uploadData = async () => {
     if (Object.keys(attendanceDates).length > 0) {
       const result = await uploadAttendanceDates(attendanceDates);
-      console.log("Upload result:", result);
+      console.log("Upload dates result:", result);
+    }
+    if (Object.keys(studentAttendance).length > 0) {
+      const result = await uploadStudentAttendances(studentAttendance);
+      console.log("Upload attendance result:", result);
     }
   };
-  useEffect(() => {
-    uploadData();
-  }, [attendanceDates]);
-
-  const [selectedDate, setSelectedDate] = useState(null);
 
   return (
-    <>
-      <ScrollView style={styles.container}>
-        <View style={styles.calender}>
-          <AttendanceCalender
-            attendanceMarkedDates={attendanceDates}
-            handleDate={(date) => {
-              setSelectedDate(date);
-              setAttendanceDates((prev) => ({
-                ...prev,
-                [date]: {
-                  selected: true,
-                  selectedColor: "green",
-                },
-              }));
-            }}
-          />
-        </View>
-        <View style={styles.container}>
+    <ScrollView style={styles.main_container}>
+      <View style={styles.section_container}>
+        <AttendanceCalender
+          attendanceMarkedDates={attendanceDates}
+          handleDate={(date) => {
+            setSelectedDate(date);
+          }}
+        />
+      </View>
+      {selectedDate && (
+        <View style={styles.section_container}>
           {Object.entries(students).map(([id, student]) => (
             <StudentButtons
+              key={id}
               IdOfStudent={id}
               title={student.name}
+              presentState={studentAttendance[id]?.includes(selectedDate)}
               onPress={(studentId, presentState) => {
+                const dates = studentAttendance[studentId] || [];
+                let updatedDates = dates;
                 if (presentState) {
-                  setStudentAttendance((prev) => {
-                    dates = prev[studentId] || []
-                    updatedDates = presentState ? [...dates, selectedDate] :
-                  })
+                  updatedDates = [...dates, selectedDate];
                 } else {
-                  studentAttendance[id].remove(selectedDate);
+                  updatedDates = dates.filter((date) => date !== selectedDate);
                 }
+                setStudentAttendance((prev) => ({
+                  ...prev,
+                  [studentId]: updatedDates,
+                }));
               }}
-            ></StudentButtons>
+            />
           ))}
+          <ActionButton
+            title={"Submit"}
+            handlePress={() => {
+              var hasAttendanceMarked = false;
+              Object.values(studentAttendance).forEach((dates) => {
+                if (dates?.includes(selectedDate)) {
+                  hasAttendanceMarked = true;
+                }
+              });
+              console.log("Attendance marked:", hasAttendanceMarked);
+              if (hasAttendanceMarked) {
+                setAttendanceDates((prev) => ({
+                  ...prev,
+                  [selectedDate]: {
+                    selected: true,
+                    selectedColor: "green",
+                  },
+                }));
+              } else {
+                setAttendanceDates((prev) => ({
+                  ...prev,
+                  [selectedDate]: {},
+                }));
+              }
+              uploadData();
+              setSelectedDate(null);
+            }}
+          ></ActionButton>
         </View>
-      </ScrollView>
-    </>
+      )}
+    </ScrollView>
   );
 };
 
-export default attendance_records;
+export default AttendanceRecords;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  main_container: {
+    flex: "auto",
     padding: 10,
     backgroundColor: "#E8E6F3",
   },
-  calender: {
-    flex: 1,
-    padding: 10,
+  section_container: {
+    flex: "auto",
+    padding: 18,
+    marginBottom: 20,
     backgroundColor: "#fff",
     borderRadius: 20,
   },

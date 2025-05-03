@@ -18,7 +18,7 @@ export const fetchAllStudents = async () => {
   if (snapshot.exists()) {
     return snapshot.val();
   } else {
-    console.log("No data available");
+    console.log("No students available");
     return null;
   }
 };
@@ -34,24 +34,13 @@ export const uploadAllStudents = async (data) => {
 };
 
 const attendanceDatesRef = ref(db, "Attendance/MarkedDates");
-const studentAttendanceRef = ref(db, "Attendance/StudentAttendance");
 
 export const fetchAttendanceDates = async () => {
   const snapshot = await get(attendanceDatesRef);
   if (snapshot.exists()) {
     return snapshot.val();
   } else {
-    console.log("No data available");
-    return null;
-  }
-};
-
-export const fetchStudentAttendances = async () => {
-  const snapshot = await get(studentAttendanceRef);
-  if (snapshot.exists()) {
-    return snapshot.val();
-  } else {
-    console.log("No data available");
+    console.log("No attendance dates available");
     return null;
   }
 };
@@ -62,6 +51,18 @@ export const uploadAttendanceDates = async (data) => {
     return 1;
   } catch (error) {
     console.error("Error setting attendance dates:", error);
+    return null;
+  }
+};
+
+const studentAttendanceRef = ref(db, "Attendance/StudentAttendance");
+
+export const fetchStudentAttendances = async () => {
+  const snapshot = await get(studentAttendanceRef);
+  if (snapshot.exists()) {
+    return snapshot.val();
+  } else {
+    console.log("No student attendance available");
     return null;
   }
 };
