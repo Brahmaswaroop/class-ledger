@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 export default function StudentButtons({
   IdOfStudent,

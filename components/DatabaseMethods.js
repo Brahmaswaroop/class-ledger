@@ -1,5 +1,5 @@
 import { db } from "./firebase";
-import { ref, set, get, update, remove } from "firebase/database";
+import { ref, set, get } from "firebase/database";
 
 export const fetchAllData = async () => {
   const snapshot = await get(ref(db));
