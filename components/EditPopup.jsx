@@ -42,6 +42,7 @@ const EditPopup = ({ studentsList, student, onClose, onSave, IsNewEntry }) => {
           <TextInput
             label="Name"
             value={studentDetails.name}
+            placeholder="Between 3 to 20 characters"
             onChangeText={(text) =>
               setStudentDetails((prev) => ({ ...prev, name: text }))
             }
@@ -61,18 +62,22 @@ const EditPopup = ({ studentsList, student, onClose, onSave, IsNewEntry }) => {
           <TextInput
             label="Class"
             value={studentDetails.class}
+            placeholder="between 1 to 12"
             onChangeText={(text) =>
               setStudentDetails((prev) => ({ ...prev, class: text }))
             }
+            keyboardType="numeric"
             mode="outlined"
             style={styles.class}
           />
           <TextInput
             label="Date of Joining"
             value={studentDetails.dateOfJoining}
+            placeholder="YYYY/MM/DD"
             onChangeText={(text) =>
               setStudentDetails((prev) => ({ ...prev, dateOfJoining: text }))
             }
+            keyboardType="numeric"
             mode="outlined"
             style={styles.dateOfJoining}
           />
@@ -81,6 +86,15 @@ const EditPopup = ({ studentsList, student, onClose, onSave, IsNewEntry }) => {
           <Button onPress={onClose}>Cancel</Button>
           <Button
             onPress={() => {
+              if (
+                !studentDetails.name ||
+                !studentDetails.age ||
+                !studentDetails.class ||
+                !studentDetails.dateOfJoining
+              ) {
+                alert("Please fill all the fields");
+                return;
+              }
               handleSave();
               onClose();
             }}

@@ -81,13 +81,16 @@ const StudentsList = () => {
             <Card.Title
               title={student.name}
               titleStyle={styles.cardTitle}
-              left={(props) => <IconButton {...props} icon="account" />}
+              left={(props) => (
+                <IconButton {...props} icon="account" iconColor="#004e64" />
+              )}
               right={(props) => (
                 <Menu
                   anchor={
                     <IconButton
                       {...props}
                       icon="dots-vertical"
+                      iconColor="#004e64"
                       onPress={() => {
                         setShowMenu(id);
                       }}
@@ -97,6 +100,7 @@ const StudentsList = () => {
                   onDismiss={() => {
                     setShowMenu(null);
                   }}
+                  style={styles.menu}
                 >
                   <Menu.Item
                     title="Edit"
@@ -139,7 +143,9 @@ const StudentsList = () => {
           <Card.Title
             titleStyle={styles.cardTitle}
             title="Add Student"
-            left={(props) => <IconButton {...props} icon="plus" />}
+            left={(props) => (
+              <IconButton {...props} icon="plus" iconColor="#004e64" />
+            )}
           />
         </Card>
       </ScrollView>
@@ -151,19 +157,29 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
   },
+  menu: {
+    width: 200,
+    backgroundColor: "#f8f8f8",
+    borderRadius: 8,
+    padding: 10,
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+  },
   card: {
     marginBottom: 10,
     borderRadius: 12,
     elevation: 4,
+    backgroundColor: "#f8f8f8",
   },
   cardTitle: {
     padding: 10,
     fontSize: 18,
+    color: "#004E64",
     fontWeight: "bold",
     fontFamily: "calibri",
   },
   cardContent: {
     margin: 5,
+    color: "#004E64",
     fontWeight: "bold",
     fontStyle: "italic",
     fontFamily: "calibri",

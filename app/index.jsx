@@ -15,7 +15,7 @@ export default function App() {
         <View style={styles.buttonsContainer}>
           <MenuButtons title="Attendance" link="/attendance_records" />
           <MenuButtons title="Student details" link="/student_records" />
-          <MenuButtons title="Fees Ledger" link="" />
+          <MenuButtons title="Fees Ledger" link="fees_records" />
         </View>
       </ScrollView>
     </>
