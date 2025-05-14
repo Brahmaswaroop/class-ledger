@@ -5,6 +5,8 @@ import { View } from "react-native";
 function SelectMonth() {
   const [visible, setVisible] = useState(false);
   const [selected, setSelected] = useState(null);
+  let newDate = new Date();
+  let currentMonth = newDate.toLocaleString("default", { month: "long" });
   return (
     <View>
       <Menu
