@@ -1,11 +1,12 @@
 import React from "react";
 import { View, StyleSheet, Image, ScrollView } from "react-native";
 import MenuButtons from "@/components/buttons/MenuButtons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function App() {
   console.log("App component rendered");
   return (
-    <>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={styles.container}>
         <Image
           source={require("@/assets/Class ledger.jpg")}
@@ -18,7 +19,7 @@ export default function App() {
           <MenuButtons title="Fees Ledger" link="fees_records" />
         </View>
       </ScrollView>
-    </>
+    </SafeAreaView>
   );
 }
 
