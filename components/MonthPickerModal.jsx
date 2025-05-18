@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Modal,
   View,
@@ -38,6 +38,24 @@ export default function MonthPickerModal() {
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [selectedYear, setSelectedYear] = useState(null);
 
+  const yearListRef = useRef(null);
+  const monthListRef = useRef(null);
+
+  useEffect(() => {
+    if (modalVisible) {
+      setTimeout(() => {
+        yearListRef.current?.scrollToIndex({
+          index: years.indexOf(currentYear) - 1,
+          animated: true,
+        });
+        monthListRef.current?.scrollToIndex({
+          index: months.indexOf(currentMonth) - 1,
+          animated: true,
+        });
+      }, 100); // slight delay to allow rendering
+    }
+  }, [modalVisible]);
+
   return (
     <View>
       <TouchableOpacity
@@ -62,9 +80,10 @@ export default function MonthPickerModal() {
           <View style={styles.modalContent}>
             <View style={styles.modalBody}>
               <FlatList
+                ref={yearListRef}
                 data={years}
                 keyExtractor={(item) => item.toString()}
-                style={styles.list}
+                style={{ flex: 1 }}
                 renderItem={({ item }) => (
                   <TouchableOpacity
                     style={styles.option}
@@ -76,18 +95,17 @@ export default function MonthPickerModal() {
                     <Text style={styles.optionText}>{item}</Text>
                   </TouchableOpacity>
                 )}
-                showsVerticalScrollIndicator={false}
-                initialScrollIndex={currentYear - 1970 - 1}
                 getItemLayout={(data, index) => ({
-                  length: 40, // height of each item (adjust to match your style)
-                  offset: 40 * index,
+                  length: 42,
+                  offset: 42 * index,
                   index,
                 })}
               />
               <FlatList
+                ref={monthListRef}
                 data={months}
                 keyExtractor={(item) => item}
-                style={styles.list}
+                style={{ flex: 1 }}
                 renderItem={({ item }) => (
                   <TouchableOpacity
                     style={styles.option}
@@ -99,11 +117,9 @@ export default function MonthPickerModal() {
                     <Text style={styles.optionText}>{item}</Text>
                   </TouchableOpacity>
                 )}
-                showsVerticalScrollIndicator={false}
-                initialScrollIndex={months.indexOf(currentMonth) - 1}
                 getItemLayout={(data, index) => ({
-                  length: 40, // height of each item (adjust to match your style)
-                  offset: 40 * index,
+                  length: 42,
+                  offset: 42 * index,
                   index,
                 })}
               />
@@ -114,6 +130,7 @@ export default function MonthPickerModal() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   selectBox: {
     borderWidth: 1,
@@ -121,7 +138,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginBottom: 20,
-    alignItems: "center",
   },
   modalOverlay: {
     flex: 1,
@@ -131,7 +147,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: 250,
-    height: 126,
+    height: 148,
     backgroundColor: "#f8f8f8",
     borderRadius: 10,
     padding: 10,
@@ -146,7 +162,10 @@ const styles = StyleSheet.create({
   },
   option: {
     backgroundColor: "#f8f8f8",
-    padding: 6,
+    height: 42,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 10,
     borderBottomWidth: 1,
     borderColor: "#25A18E",
   },
