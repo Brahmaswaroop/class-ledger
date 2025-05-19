@@ -76,3 +76,47 @@ export const uploadStudentAttendances = async (data) => {
     return null;
   }
 };
+
+const monthsWithFeeRef = ref(db, "Fees/MonthsWithFee");
+
+export const fetchMonthsWithFee = async () => {
+  const snapshot = await get(monthsWithFeeRef);
+  if (snapshot.exists()) {
+    return snapshot.val();
+  } else {
+    console.log("No months with fee available");
+    return null;
+  }
+};
+
+export const uploadMonthsWithFee = async (data) => {
+  try {
+    await set(monthsWithFeeRef, data);
+    return 1;
+  } catch (error) {
+    console.error("Error setting months with fee:", error);
+    return null;
+  }
+};
+
+const studentFeeDataRef = ref(db, "Fees/StudentFeeData");
+
+export const fetchStudentFeeData = async () => {
+  const snapshot = await get(studentFeeDataRef);
+  if (snapshot.exists()) {
+    return snapshot.val();
+  } else {
+    console.log("No student fee data available");
+    return null;
+  }
+};
+
+export const uploadStudentFeeData = async (data) => {
+  try {
+    await set(studentFeeDataRef, data);
+    return 1;
+  } catch (error) {
+    console.error("Error setting student fee data:", error);
+    return null;
+  }
+};

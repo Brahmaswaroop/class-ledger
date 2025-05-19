@@ -13,13 +13,13 @@ const addStudent = (studentsList, studentDetails) => {
   return { ...studentsList, [studentId]: studentDetails }; // RETURN a NEW object
 };
 
-const updateStudent = (studentsList, studentDetails) => {
-  return { ...studentsList, [studentDetails.id]: studentDetails }; // RETURN a NEW object
+const updateStudent = (studentsList, studentId, studentDetails) => {
+  return { ...studentsList, [studentId]: studentDetails }; // RETURN a NEW object
 };
 
 const EditPopup = ({ studentsList, student, onClose, onSave, IsNewEntry }) => {
   const [studentDetails, setStudentDetails] = useState(
-    IsNewEntry ? {} : student
+    IsNewEntry ? {} : student.data
   );
 
   const handleSave = () => {
@@ -27,7 +27,11 @@ const EditPopup = ({ studentsList, student, onClose, onSave, IsNewEntry }) => {
     if (IsNewEntry) {
       updatedStudentsList = addStudent(studentsList, studentDetails);
     } else {
-      updatedStudentsList = updateStudent(studentsList, studentDetails);
+      updatedStudentsList = updateStudent(
+        studentsList,
+        student.id,
+        studentDetails
+      );
     }
     onSave(updatedStudentsList);
     onClose();
@@ -43,7 +47,7 @@ const EditPopup = ({ studentsList, student, onClose, onSave, IsNewEntry }) => {
             label="Name"
             value={studentDetails.name}
             placeholder="Between 3 to 20 characters"
-            onChangeText={(text) =>
+            onSelectionChange={(text) =>
               setStudentDetails((prev) => ({ ...prev, name: text }))
             }
             mode="outlined"
@@ -77,9 +81,19 @@ const EditPopup = ({ studentsList, student, onClose, onSave, IsNewEntry }) => {
             onChangeText={(text) =>
               setStudentDetails((prev) => ({ ...prev, dateOfJoining: text }))
             }
-            keyboardType="numeric"
             mode="outlined"
             style={styles.dateOfJoining}
+          />
+          <TextInput
+            label="Fees assigned"
+            value={studentDetails.feesAssigned}
+            placeholder="Enter fees:"
+            onChangeText={(text) =>
+              setStudentDetails((prev) => ({ ...prev, feesAssigned: text }))
+            }
+            keyboardType="numeric"
+            mode="outlined"
+            style={styles.feesAssigned}
           />
         </Dialog.Content>
         <Dialog.Actions>
@@ -90,7 +104,8 @@ const EditPopup = ({ studentsList, student, onClose, onSave, IsNewEntry }) => {
                 !studentDetails.name ||
                 !studentDetails.age ||
                 !studentDetails.class ||
-                !studentDetails.dateOfJoining
+                !studentDetails.dateOfJoining ||
+                !studentDetails.feesAssigned
               ) {
                 alert("Please fill all the fields");
                 return;

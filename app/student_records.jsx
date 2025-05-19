@@ -106,14 +106,14 @@ const StudentsList = () => {
                     title="Edit"
                     onPress={() => {
                       setShowMenu(null);
-                      setSelectedStudent({ id, ...student });
+                      setSelectedStudent({ id: id, data: { ...student } });
                       setShowInputPopup(true);
                     }}
                   />
                   <Menu.Item
                     onPress={() => {
                       setShowMenu(null);
-                      setSelectedStudent({ id, ...student });
+                      setSelectedStudent({ id: id, data: { ...student } });
                       setShowDeletePopup(true);
                     }}
                     title="Delete"

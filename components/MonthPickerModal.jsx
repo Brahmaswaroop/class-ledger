@@ -33,7 +33,7 @@ const currentMonth = new Date().toLocaleString("default", {
 });
 const currentYear = new Date().getFullYear();
 
-export default function MonthPickerModal() {
+export default function MonthPickerModal({ onClose }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [selectedYear, setSelectedYear] = useState(null);
@@ -89,7 +89,10 @@ export default function MonthPickerModal() {
                     style={styles.option}
                     onPress={() => {
                       setSelectedYear(item);
-                      if (selectedMonth) setModalVisible(false);
+                      if (selectedMonth) {
+                        setModalVisible(false);
+                        onClose(selectedMonth, selectedYear);
+                      }
                     }}
                   >
                     <Text style={styles.optionText}>{item}</Text>
@@ -111,7 +114,10 @@ export default function MonthPickerModal() {
                     style={styles.option}
                     onPress={() => {
                       setSelectedMonth(item);
-                      if (selectedYear) setModalVisible(false);
+                      if (selectedYear) {
+                        setModalVisible(false);
+                        onClose(selectedMonth, selectedYear);
+                      }
                     }}
                   >
                     <Text style={styles.optionText}>{item}</Text>

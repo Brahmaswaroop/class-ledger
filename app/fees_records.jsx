@@ -1,10 +1,9 @@
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { React, useState, useEffect } from "react";
-import MonthPickerModal from "@/components/MonthPickerModal";
-
 import { fetchAllStudents } from "@/components/DatabaseMethods";
+import MonthPickerModal from "@/components/MonthPickerModal";
 import StudentButtons from "@/components/buttons/StudentButtons";
-import ActionButton from "@/components/buttons/ActionButton";
+import DateSelector from "@/components/DateSelector";
 
 const FeesRecords = () => {
   const [students, setStudents] = useState({});
@@ -13,7 +12,6 @@ const FeesRecords = () => {
   const fetchData = async () => {
     const studentsData = await fetchAllStudents();
     setStudents(studentsData || {});
-    console.log("Fetched students:", studentsData);
   };
 
   useEffect(() => {
@@ -22,10 +20,35 @@ const FeesRecords = () => {
 
   return (
     <>
-      <View>
-        <MonthPickerModal />
-      </View>
-      <View></View>
+      <ScrollView>
+        <View>
+          <MonthPickerModal
+            onClose={(selectedYear, selectedMonth) => {
+              setSelectedDate(`${selectedYear} ${selectedMonth}`);
+            }}
+          />
+        </View>
+        {selectedDate && (
+          <View>
+            {Object.entries(students).map(([id, student]) => (
+              <>
+                <StudentButtons
+                  key={id}
+                  IdOfStudent={id}
+                  title={student.name}
+                  presentState={true}
+                  onPress={(IdOfStudent, presentState) => {
+                    console.log(
+                      `Student ID: ${IdOfStudent}, Present State: ${presentState}`
+                    );
+                  }}
+                />
+                <DateSelector key={`D${id}`} />
+              </>
+            ))}
+          </View>
+        )}
+      </ScrollView>
     </>
   );
 };
