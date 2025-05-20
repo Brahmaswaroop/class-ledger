@@ -6,32 +6,16 @@ export default function RootLayout() {
     <PaperProvider>
       <Stack
         screenOptions={{
-          headerStyle: {
-            backgroundColor: "#190087",
-          },
+          headerStyle: { backgroundColor: "#190087" },
           headerTitleAlign: "center",
           headerTintColor: "#fff",
           headerTitleStyle: {
             fontWeight: "500",
             fontFamily: "Arial",
           },
-          contentStyle: {
-            backgroundColor: "#E8E6F3",
-          },
+          contentStyle: { backgroundColor: "#E8E6F3" },
         }}
-      >
-        <Stack.Screen
-          name="index"
-          options={{
-            title: "Home",
-            headerTitleStyle: {
-              fontSize: 20,
-              fontWeight: "500",
-              fontFamily: "Arial",
-            },
-          }}
-        />
-      </Stack>
+      />
     </PaperProvider>
   );
 }

@@ -1,8 +1,16 @@
 import React from "react";
 import { View, StyleSheet, Image, ScrollView } from "react-native";
 import MenuButtons from "@/components/buttons/MenuButtons";
+import { useInternetStatus } from "@/components/useInternetStatus";
+import { Redirect } from "expo-router";
 
 export default function App() {
+  const isConnected = useInternetStatus();
+
+  if (!isConnected) {
+    return <Redirect href="NoInternet" />;
+  }
+
   console.log("App component rendered");
   return (
     <ScrollView style={styles.container}>
