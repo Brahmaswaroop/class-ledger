@@ -5,7 +5,7 @@ import MonthPickerModal from "@/components/MonthPickerModal";
 import StudentButtons from "@/components/buttons/StudentButtons";
 import DateSelector from "@/components/DateSelector";
 
-const FeesRecords = () => {
+export default FeesRecords = () => {
   const [students, setStudents] = useState({});
   const [selectedDate, setSelectedDate] = useState(null);
 
@@ -52,7 +52,5 @@ const FeesRecords = () => {
     </>
   );
 };
-
-export default FeesRecords;
 
 const styles = StyleSheet.create({});

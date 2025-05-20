@@ -8,10 +8,7 @@ import {
   StyleSheet,
 } from "react-native";
 
-let years = [];
-for (let i = 1970; i <= 2100; i++) {
-  years.push(i);
-}
+const years = Array.from({ length: 131 }, (_, i) => 1970 + i);
 
 const months = [
   "January",
@@ -28,10 +25,48 @@ const months = [
   "December",
 ];
 
-const currentMonth = new Date().toLocaleString("default", {
-  month: "long",
-});
+const currentMonth = new Date().toLocaleString("default", { month: "long" });
 const currentYear = new Date().getFullYear();
+
+function CustomList({
+  data,
+  dataRef,
+  setItem,
+  closeCondition,
+  setModalVisible,
+  onClose,
+}) {
+  return (
+    <FlatList
+      ref={dataRef}
+      data={data}
+      keyExtractor={(item) => item.toString()}
+      style={{ flex: 1 }}
+      renderItem={({ item }) => (
+        <TouchableOpacity
+          style={styles.option}
+          onPress={() => {
+            setItem(item);
+            if (closeCondition) {
+              setModalVisible(false);
+              onClose(
+                typeof item === "string" ? item : closeCondition,
+                typeof item === "string" ? closeCondition : item
+              );
+            }
+          }}
+        >
+          <Text style={styles.optionText}>{item}</Text>
+        </TouchableOpacity>
+      )}
+      getItemLayout={(_, index) => ({
+        length: 42,
+        offset: 42 * index,
+        index,
+      })}
+    />
+  );
+}
 
 export default function MonthPickerModal({ onClose }) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -52,7 +87,7 @@ export default function MonthPickerModal({ onClose }) {
           index: months.indexOf(currentMonth) - 1,
           animated: true,
         });
-      }, 100); // slight delay to allow rendering
+      }, 100);
     }
   }, [modalVisible]);
 
@@ -67,67 +102,31 @@ export default function MonthPickerModal({ onClose }) {
         style={styles.selectBox}
       >
         {selectedMonth && selectedYear ? (
-          <Text>
-            {selectedYear} {selectedMonth}
-          </Text>
+          <Text>{`${selectedMonth} ${selectedYear}`}</Text>
         ) : (
           <Text>Select Month and Year</Text>
         )}
       </TouchableOpacity>
 
-      <Modal visible={modalVisible} animationType="fade" transparent={true}>
+      <Modal visible={modalVisible} animationType="fade" transparent>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalBody}>
-              <FlatList
-                ref={yearListRef}
+              <CustomList
                 data={years}
-                keyExtractor={(item) => item.toString()}
-                style={{ flex: 1 }}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={styles.option}
-                    onPress={() => {
-                      setSelectedYear(item);
-                      if (selectedMonth) {
-                        setModalVisible(false);
-                        onClose(selectedMonth, selectedYear);
-                      }
-                    }}
-                  >
-                    <Text style={styles.optionText}>{item}</Text>
-                  </TouchableOpacity>
-                )}
-                getItemLayout={(data, index) => ({
-                  length: 42,
-                  offset: 42 * index,
-                  index,
-                })}
+                dataRef={yearListRef}
+                setItem={setSelectedYear}
+                closeCondition={selectedMonth}
+                setModalVisible={setModalVisible}
+                onClose={onClose}
               />
-              <FlatList
-                ref={monthListRef}
+              <CustomList
                 data={months}
-                keyExtractor={(item) => item}
-                style={{ flex: 1 }}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={styles.option}
-                    onPress={() => {
-                      setSelectedMonth(item);
-                      if (selectedYear) {
-                        setModalVisible(false);
-                        onClose(selectedMonth, selectedYear);
-                      }
-                    }}
-                  >
-                    <Text style={styles.optionText}>{item}</Text>
-                  </TouchableOpacity>
-                )}
-                getItemLayout={(data, index) => ({
-                  length: 42,
-                  offset: 42 * index,
-                  index,
-                })}
+                dataRef={monthListRef}
+                setItem={setSelectedMonth}
+                closeCondition={selectedYear}
+                setModalVisible={setModalVisible}
+                onClose={onClose}
               />
             </View>
           </View>
@@ -161,10 +160,6 @@ const styles = StyleSheet.create({
   modalBody: {
     flexDirection: "row",
     flex: 1,
-  },
-  list: {
-    flex: 1,
-    marginBottom: 10,
   },
   option: {
     backgroundColor: "#f8f8f8",

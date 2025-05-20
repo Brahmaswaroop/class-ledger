@@ -1,15 +1,22 @@
-// Import the functions you need from the SDKs you need
+// firebaseConfig.js
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  initializeAuth,
+  getReactNativePersistence,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import { getDatabase } from "firebase/database";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyD5lqiAu6YOVwlLyDKP7FfzY0nPQ-0DdNM",
   authDomain: "tuition-management-001.firebaseapp.com",
   databaseURL:
     "https://tuition-management-001-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "tuition-management-001",
-  storageBucket: "tuition-management-001.firebasestorage.app",
+  storageBucket: "tuition-management-001.appspot.com",
   messagingSenderId: "483466981443",
   appId: "1:483466981443:web:e7e5b488a897da0be5a4f6",
   measurementId: "G-Q70RJY8NQ2",
@@ -17,7 +24,12 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+
+// ✅ Proper persistence for React Native
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage),
+});
+
 const db = getDatabase(app);
 const googleProvider = new GoogleAuthProvider();
 

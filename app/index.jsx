@@ -1,25 +1,22 @@
 import React from "react";
 import { View, StyleSheet, Image, ScrollView } from "react-native";
 import MenuButtons from "@/components/buttons/MenuButtons";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function App() {
   console.log("App component rendered");
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView style={styles.container}>
-        <Image
-          source={require("@/assets/Class ledger.jpg")}
-          style={styles.banner}
-          resizeMode="cover"
-        />
-        <View style={styles.buttonsContainer}>
-          <MenuButtons title="Attendance" link="/attendance_records" />
-          <MenuButtons title="Student details" link="/student_records" />
-          <MenuButtons title="Fees Ledger" link="fees_records" />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <ScrollView style={styles.container}>
+      <Image
+        source={require("@/assets/Class ledger.jpg")}
+        style={styles.banner}
+        resizeMode="cover"
+      />
+      <View style={styles.buttonsContainer}>
+        <MenuButtons title="Attendance" link="/attendance_records" />
+        <MenuButtons title="Student details" link="/student_records" />
+        <MenuButtons title="Fees Ledger" link="fees_records" />
+      </View>
+    </ScrollView>
   );
 }
 
