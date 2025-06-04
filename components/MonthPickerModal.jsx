@@ -28,14 +28,8 @@ const months = [
 const currentMonth = new Date().toLocaleString("default", { month: "long" });
 const currentYear = new Date().getFullYear();
 
-function CustomList({
-  data,
-  dataRef,
-  setItem,
-  closeCondition,
-  setModalVisible,
-  onClose,
-}) {
+function CustomList({ data, dataRef, setItem }) {
+  const [selected, setSelected] = useState(null);
   return (
     <FlatList
       ref={dataRef}
@@ -44,16 +38,13 @@ function CustomList({
       style={{ flex: 1 }}
       renderItem={({ item }) => (
         <TouchableOpacity
-          style={styles.option}
+          style={{
+            ...styles.option,
+            backgroundColor: selected == item ? "#25A18E" : "#f8f8f8",
+          }}
           onPress={() => {
             setItem(item);
-            if (closeCondition) {
-              setModalVisible(false);
-              onClose(
-                typeof item === "string" ? item : closeCondition,
-                typeof item === "string" ? closeCondition : item
-              );
-            }
+            setSelected(item);
           }}
         >
           <Text style={styles.optionText}>{item}</Text>
@@ -116,19 +107,31 @@ export default function MonthPickerModal({ onClose }) {
                 data={years}
                 dataRef={yearListRef}
                 setItem={setSelectedYear}
-                closeCondition={selectedMonth}
-                setModalVisible={setModalVisible}
-                onClose={onClose}
               />
               <CustomList
                 data={months}
                 dataRef={monthListRef}
                 setItem={setSelectedMonth}
-                closeCondition={selectedYear}
-                setModalVisible={setModalVisible}
-                onClose={onClose}
               />
             </View>
+            <TouchableOpacity
+              onPress={() => {
+                if (selectedMonth && selectedYear) {
+                  setModalVisible(false);
+                  onClose(selectedYear, selectedMonth);
+                } else {
+                  alert("Please select both month and year.");
+                }
+              }}
+              style={{
+                backgroundColor: "#190087",
+                padding: 10,
+                borderRadius: 5,
+                marginTop: 10,
+              }}
+            >
+              <Text style={{ color: "white", textAlign: "center" }}>Done</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
