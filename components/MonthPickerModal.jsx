@@ -118,7 +118,7 @@ export default function MonthPickerModal({ onClose }) {
               onPress={() => {
                 if (selectedMonth && selectedYear) {
                   setModalVisible(false);
-                  onClose(selectedYear, selectedMonth);
+                  onClose(selectedYear, months.indexOf(selectedMonth) + 1);
                 } else {
                   alert("Please select both month and year.");
                 }

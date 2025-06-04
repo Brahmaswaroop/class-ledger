@@ -77,10 +77,10 @@ export const uploadStudentAttendances = async (data) => {
   }
 };
 
-const monthsWithFeeRef = ref(db, "Fees/MonthsWithFee");
+const feesByMonthRef = ref(db, "Fees/feesByMonth");
 
-export const fetchMonthsWithFee = async () => {
-  const snapshot = await get(monthsWithFeeRef);
+export const fetchFeesByMonth = async () => {
+  const snapshot = await get(feesByMonthRef);
   if (snapshot.exists()) {
     return snapshot.val();
   } else {
@@ -89,9 +89,9 @@ export const fetchMonthsWithFee = async () => {
   }
 };
 
-export const uploadMonthsWithFee = async (data) => {
+export const uploadFeesByMonth = async (data) => {
   try {
-    await set(monthsWithFeeRef, data);
+    await set(feesByMonthRef, data);
     return 1;
   } catch (error) {
     console.error("Error setting months with fee:", error);
@@ -99,10 +99,10 @@ export const uploadMonthsWithFee = async (data) => {
   }
 };
 
-const studentFeeDataRef = ref(db, "Fees/StudentFeeData");
+const studentFeesRef = ref(db, "Fees/StudentFees");
 
-export const fetchStudentFeeData = async () => {
-  const snapshot = await get(studentFeeDataRef);
+export const fetchStudentFees = async () => {
+  const snapshot = await get(studentFeesRef);
   if (snapshot.exists()) {
     return snapshot.val();
   } else {
@@ -111,9 +111,9 @@ export const fetchStudentFeeData = async () => {
   }
 };
 
-export const uploadStudentFeeData = async (data) => {
+export const uploadStudentFees = async (data) => {
   try {
-    await set(studentFeeDataRef, data);
+    await set(studentFeesRef, data);
     return 1;
   } catch (error) {
     console.error("Error setting student fee data:", error);
