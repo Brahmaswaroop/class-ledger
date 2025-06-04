@@ -1,15 +1,13 @@
-// firebaseConfig.js
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import {
   initializeAuth,
+  getAuth,
   getReactNativePersistence,
   GoogleAuthProvider,
-  signInWithPopup,
 } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyD5lqiAu6YOVwlLyDKP7FfzY0nPQ-0DdNM",
   authDomain: "tuition-management-001.firebaseapp.com",
@@ -22,15 +20,20 @@ const firebaseConfig = {
   measurementId: "G-Q70RJY8NQ2",
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// ✅ Only initialize app if it hasn't been initialized already
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
-// ✅ Proper persistence for React Native
-const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(AsyncStorage),
-});
+// ✅ Initialize Auth only if not already done
+let auth;
+try {
+  auth = getAuth(app);
+} catch (e) {
+  auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(AsyncStorage),
+  });
+}
 
 const db = getDatabase(app);
 const googleProvider = new GoogleAuthProvider();
 
-export { auth, db, googleProvider, signInWithPopup };
+export { auth, db, googleProvider };
