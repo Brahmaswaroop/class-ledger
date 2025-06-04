@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import { Platform, View } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-export default DateSelector = () => {
+export default DateSelector = ({ date = null, onClose }) => {
   const [visible, setVisible] = useState(false);
   const [selected, setSelected] = useState(null);
-  let newDate = new Date();
+  setSelected(date);
   return (
     <View>
       {Platform.OS === "android" && (
@@ -20,11 +20,12 @@ export default DateSelector = () => {
           </Button>
           {visible && (
             <DateTimePicker
-              value={selected ? new Date(selected) : newDate}
+              value={selected ? new Date(selected) : new Date()}
               mode="date"
               display="default"
               onChange={(event, date) => {
                 setVisible(false);
+                console.log("Selected date:", date);
                 if (date) {
                   setSelected(date.toLocaleDateString());
                 }

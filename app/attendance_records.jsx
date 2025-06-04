@@ -24,7 +24,6 @@ const AttendanceRecords = () => {
     setStudentAttendance(data2 || {});
     const studentsData = await fetchAllStudents();
     setStudents(studentsData || {});
-    console.log("Fetched students:", studentsData);
   };
 
   useEffect(() => {
@@ -34,11 +33,9 @@ const AttendanceRecords = () => {
   const uploadData = async () => {
     if (Object.keys(attendanceDates).length > 0) {
       const result = await uploadAttendanceDates(attendanceDates);
-      console.log("Upload dates result:", result);
     }
     if (Object.keys(studentAttendance).length > 0) {
       const result = await uploadStudentAttendances(studentAttendance);
-      console.log("Upload attendance result:", result);
     }
   };
 
@@ -84,7 +81,6 @@ const AttendanceRecords = () => {
                   hasAttendanceMarked = true;
                 }
               });
-              console.log("Attendance marked:", hasAttendanceMarked);
               if (hasAttendanceMarked) {
                 setAttendanceDates((prev) => ({
                   ...prev,
