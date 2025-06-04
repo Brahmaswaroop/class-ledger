@@ -31,9 +31,8 @@ export default FeesRecords = () => {
         {selectedDate && (
           <View>
             {Object.entries(students).map(([id, student]) => (
-              <>
+              <View key={id} style={styles.studentFeeDate}>
                 <StudentButtons
-                  key={id}
                   IdOfStudent={id}
                   title={student.name}
                   presentState={true}
@@ -43,8 +42,8 @@ export default FeesRecords = () => {
                     );
                   }}
                 />
-                <DateSelector key={`D${id}`} />
-              </>
+                <DateSelector />
+              </View>
             ))}
           </View>
         )}
@@ -53,4 +52,10 @@ export default FeesRecords = () => {
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  studentFeeDate: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+  },
+});
