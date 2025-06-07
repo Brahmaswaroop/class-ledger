@@ -1,22 +1,22 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
 
-export default function StudentButtons({
-  IdOfStudent,
-  presentState = false,
+export default function ToggleButton({
+  Id,
+  currentState = false,
   title,
   onPress,
 }) {
   const handlePress = () => {
-    const newPresentState = !presentState;
-    onPress(IdOfStudent, newPresentState);
+    const newCurrentState = !currentState;
+    onPress(Id, newCurrentState);
   };
   return (
     <View>
       <TouchableOpacity
         style={[
           styles.menuButtons,
-          { backgroundColor: presentState ? "#03C03C" : "#FEFEFA" },
+          { backgroundColor: currentState ? "#03C03C" : "#FEFEFA" },
         ]}
         onPress={() => handlePress()}
       >

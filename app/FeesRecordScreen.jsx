@@ -8,7 +8,7 @@ import {
   uploadStudentFees,
 } from "@/components/DatabaseMethods";
 import MonthPickerModal from "@/components/MonthPickerModal";
-import StudentButtons from "@/components/buttons/StudentButtons";
+import ToggleButton from "@/components/buttons/StudentButtons";
 import ActionButton from "@/components/buttons/ActionButton";
 
 export default FeesRecords = () => {
@@ -53,7 +53,7 @@ export default FeesRecords = () => {
           <View>
             {Object.entries(students).map(([id, student]) => (
               <View key={id} style={styles.studentFeeDate}>
-                <StudentButtons
+                <ToggleButton
                   IdOfStudent={id}
                   title={student.name}
                   presentState={feesByMonth[selectedMonth]?.[id]?.paid ?? false}

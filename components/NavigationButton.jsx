@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import React from "react";
 
-export default function MenuButtons({ title, link }) {
+export default function NavigationButton({ title, link }) {
   const router = useRouter();
   return (
     <View>

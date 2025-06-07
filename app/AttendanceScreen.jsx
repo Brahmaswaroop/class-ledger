@@ -1,6 +1,6 @@
 import { View, ScrollView, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
-import AttendanceCalender from "@/components/AttendanceCalender";
+import { Calendar } from "react-native-calendars";
 import {
   fetchAllStudents,
   fetchAttendanceDates,
@@ -8,7 +8,7 @@ import {
   uploadAttendanceDates,
   uploadStudentAttendances,
 } from "@/components/DatabaseMethods";
-import StudentButtons from "@/components/buttons/StudentButtons";
+import ToggleButton from "@/components/buttons/StudentButtons";
 import ActionButton from "@/components/buttons/ActionButton";
 
 const AttendanceRecords = () => {
@@ -42,17 +42,19 @@ const AttendanceRecords = () => {
   return (
     <ScrollView style={styles.main_container}>
       <View style={styles.section_container}>
-        <AttendanceCalender
-          attendanceMarkedDates={attendanceDates}
-          handleDate={(date) => {
-            setSelectedDate(date);
+        <Calendar
+          onDayPress={(day) => {
+            setSelectedDate(day.dateString);
           }}
+          markedDates={attendanceDates}
+          markingType={"multi-dot"}
         />
       </View>
+
       {selectedDate && (
         <View style={styles.section_container}>
           {Object.entries(students).map(([id, student]) => (
-            <StudentButtons
+            <ToggleButton
               key={id}
               IdOfStudent={id}
               title={student.name}
@@ -72,6 +74,7 @@ const AttendanceRecords = () => {
               }}
             />
           ))}
+
           <ActionButton
             title={"Submit"}
             handlePress={() => {
@@ -98,7 +101,7 @@ const AttendanceRecords = () => {
               uploadData();
               setSelectedDate(null);
             }}
-          ></ActionButton>
+          />
         </View>
       )}
     </ScrollView>
