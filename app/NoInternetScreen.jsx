@@ -1,10 +1,10 @@
 import { View, Text, StyleSheet } from "react-native";
 import { useRef } from "react";
 import { useRouter } from "expo-router";
-import { useInternetStatus } from "@/components/useInternetStatus";
+import { useInternetStatus } from "@/utils/useInternetStatus";
 import { Button } from "react-native-paper";
 
-export default function NoInternet() {
+export default function NoInternetScreen() {
   const isConnected = useInternetStatus();
   const router = useRouter();
   const hasNavigated = useRef(false);

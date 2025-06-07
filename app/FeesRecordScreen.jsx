@@ -6,12 +6,12 @@ import {
   fetchStudentFees,
   uploadFeesByMonth,
   uploadStudentFees,
-} from "@/components/DatabaseMethods";
+} from "@/utils/DatabaseMethods";
 import MonthPickerModal from "@/components/MonthPickerModal";
-import ToggleButton from "@/components/buttons/StudentButtons";
-import ActionButton from "@/components/buttons/ActionButton";
+import ToggleButton from "@/components/ToggleButton";
+import ActionButton from "@/components/ActionButton";
 
-export default FeesRecords = () => {
+export default FeesRecordScreen = () => {
   const [students, setStudents] = useState({});
   const [feesByMonth, setFeesByMonth] = useState({});
   const [studentFees, setStudentFees] = useState({});

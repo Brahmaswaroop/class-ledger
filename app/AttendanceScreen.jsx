@@ -7,9 +7,9 @@ import {
   fetchStudentAttendances,
   uploadAttendanceDates,
   uploadStudentAttendances,
-} from "@/components/DatabaseMethods";
-import ToggleButton from "@/components/buttons/StudentButtons";
-import ActionButton from "@/components/buttons/ActionButton";
+} from "@/utils/DatabaseMethods";
+import ToggleButton from "@/components/ToggleButton";
+import ActionButton from "@/components/ActionButton";
 
 const AttendanceRecords = () => {
   const [attendanceDates, setAttendanceDates] = useState({});
@@ -56,9 +56,9 @@ const AttendanceRecords = () => {
           {Object.entries(students).map(([id, student]) => (
             <ToggleButton
               key={id}
-              IdOfStudent={id}
+              Id={id}
               title={student.name}
-              presentState={studentAttendance[id]?.includes(selectedDate)}
+              currentState={studentAttendance[id]?.includes(selectedDate)}
               onPress={(studentId, presentState) => {
                 const dates = studentAttendance[studentId] || [];
                 let updatedDates = dates;

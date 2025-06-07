@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { Card, Text, IconButton, Menu } from "react-native-paper";
-import {
-  fetchAllStudents,
-  uploadAllStudents,
-} from "@/components/DatabaseMethods"; // Adjust the import path as necessary
-import EditPopup from "@/components/EditPopup";
+import { fetchAllStudents, uploadAllStudents } from "@/utils/DatabaseMethods"; // Adjust the import path as necessary
+import EditPopup from "@/components/StudentDetailsEditorPopup";
 import DeleteConfirmPopup from "@/components/DeleteConfirmPopup";
 
-const StudentsList = () => {
+export default StudentRecordScreen = () => {
   // Part 1: Fetching the students data
   const [students, setStudents] = useState({});
   const fetchStudents = async () => {
@@ -185,5 +182,3 @@ const styles = StyleSheet.create({
     fontFamily: "calibri",
   },
 });
-
-export default StudentsList;

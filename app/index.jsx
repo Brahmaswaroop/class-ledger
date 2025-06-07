@@ -1,7 +1,7 @@
 import React from "react";
 import { View, StyleSheet, Image, ScrollView } from "react-native";
-import NavigationButton from "@/components/buttons/MenuButtons";
-import { useInternetStatus } from "@/components/useInternetStatus";
+import NavigationButton from "@/components/NavigationButton";
+import { useInternetStatus } from "@/utils/useInternetStatus";
 import { Redirect } from "expo-router";
 
 export default function App() {

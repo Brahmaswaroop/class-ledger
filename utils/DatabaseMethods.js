@@ -1,4 +1,4 @@
-import { db } from "./firebase";
+import { db } from "@/services/firebase";
 import { ref, set, get } from "firebase/database";
 
 export const fetchAllData = async () => {
