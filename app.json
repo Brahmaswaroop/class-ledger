@@ -4,7 +4,7 @@
     "slug": "class-ledger",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "@/assets/images/icon.png",
+    "icon": "./assets/images/icon.png",
     "scheme": "classledger",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -15,21 +15,21 @@
       "package": "com.brahmaswaroop.classledger",
       "versionCode": 1,
       "adaptiveIcon": {
-        "foregroundImage": "@/assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "@/assets/images/icon.png"
+      "favicon": "./assets/images/icon.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "@/assets/images/adaptive-icon.png",
+          "image": "./assets/images/adaptive-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
@@ -37,8 +37,16 @@
       ]
     ],
     "experiments": {
-      "typedRoutes": true,
-      "bridgeless": false
-    }
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "581706e8-e51f-4f9b-8229-a7b843765961"
+      }
+    },
+    "owner": "brahmaswaroop"
   }
 }

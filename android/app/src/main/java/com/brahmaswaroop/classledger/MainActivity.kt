@@ -1,4 +1,4 @@
-package com.brahmaswaroop.hello_world
+package com.brahmaswaroop.classledger
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build
