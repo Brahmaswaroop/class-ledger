@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   fetchAllData,
   fetchAllStudents,
+  fetchAttendanceDates,
   fetchStudentAttendances,
   fetchFeesByMonth,
   fetchStudentFees,
@@ -20,11 +21,12 @@ export const useAppData = () => {
 };
 
 export const AppDataProvider = ({ children }) => {
-  const [students, setStudents] = useState({});
-  const [feesByMonth, setFeesByMonth] = useState({});
-  const [studentAttendance, setStudentAttendance] = useState({});
-  const [studentFees, setStudentFees] = useState({});
   const [allData, setAllData] = useState({});
+  const [students, setStudents] = useState({});
+  const [attendanceDates, setAttendanceDates] = useState({});
+  const [studentAttendance, setStudentAttendance] = useState({});
+  const [feesByMonth, setFeesByMonth] = useState({});
+  const [studentFees, setStudentFees] = useState({});
 
   // Load from AsyncStorage on app start
   useEffect(() => {
@@ -45,11 +47,13 @@ export const AppDataProvider = ({ children }) => {
           const data3 = await fetchStudentAttendances();
           const data4 = await fetchStudentFees();
           const data5 = await fetchAllData();
+          const data6 = await fetchAttendanceDates();
           setStudents(data1);
           setFeesByMonth(data2);
           setStudentAttendance(data3);
           setStudentFees(data4);
           setAllData(data5);
+          setAttendanceDates(data6);
         }
       } catch (err) {
         console.log("Error loading local data:", err);
@@ -58,15 +62,17 @@ export const AppDataProvider = ({ children }) => {
   }, []);
 
   const setAll = async ({
-    students,
-    feesByMonth,
-    studentAttendance,
-    studentFees,
     allData,
+    students,
+    attendanceDates,
+    studentAttendance,
+    feesByMonth,
+    studentFees,
   }) => {
     const dataToStore = {
       students: students || {},
       feesByMonth: feesByMonth || {},
+      attendanceDates: attendanceDates || {},
       studentAttendance: studentAttendance || {},
       studentFees: studentFees || {},
       allData: allData || {},
@@ -74,6 +80,7 @@ export const AppDataProvider = ({ children }) => {
 
     setStudents(dataToStore.students);
     setFeesByMonth(dataToStore.feesByMonth);
+    setAttendanceDates(dataToStore.attendanceDates);
     setStudentAttendance(dataToStore.studentAttendance);
     setStudentFees(dataToStore.studentFees);
     setAllData(dataToStore.allData);
@@ -90,6 +97,7 @@ export const AppDataProvider = ({ children }) => {
       value={{
         students,
         feesByMonth,
+        attendanceDates,
         studentAttendance,
         studentFees,
         allData,

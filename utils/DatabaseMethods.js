@@ -1,7 +1,7 @@
 import { db } from "@/services/firebase";
 import { ref, set, get } from "firebase/database";
 
-export const fetchAllData = async () => {
+const fetchAllData = async () => {
   const snapshot = await get(ref(db));
   if (snapshot.exists()) {
     return snapshot.val();
@@ -13,7 +13,7 @@ export const fetchAllData = async () => {
 
 const studentRef = (id = "") => ref(db, `Students/${id}`);
 
-export const fetchAllStudents = async () => {
+const fetchAllStudents = async () => {
   const snapshot = await get(studentRef());
   if (snapshot.exists()) {
     return snapshot.val();
@@ -23,7 +23,7 @@ export const fetchAllStudents = async () => {
   }
 };
 
-export const uploadAllStudents = async (data) => {
+const uploadAllStudents = async (data) => {
   try {
     await set(ref(db, "Students/"), data);
     return 1;
@@ -35,7 +35,7 @@ export const uploadAllStudents = async (data) => {
 
 const attendanceDatesRef = ref(db, "Attendance/MarkedDates");
 
-export const fetchAttendanceDates = async () => {
+const fetchAttendanceDates = async () => {
   const snapshot = await get(attendanceDatesRef);
   if (snapshot.exists()) {
     return snapshot.val();
@@ -45,7 +45,7 @@ export const fetchAttendanceDates = async () => {
   }
 };
 
-export const uploadAttendanceDates = async (data) => {
+const uploadAttendanceDates = async (data) => {
   try {
     await set(attendanceDatesRef, data);
     return 1;
@@ -57,7 +57,7 @@ export const uploadAttendanceDates = async (data) => {
 
 const studentAttendanceRef = ref(db, "Attendance/StudentAttendance");
 
-export const fetchStudentAttendances = async () => {
+const fetchStudentAttendances = async () => {
   const snapshot = await get(studentAttendanceRef);
   if (snapshot.exists()) {
     return snapshot.val();
@@ -67,7 +67,7 @@ export const fetchStudentAttendances = async () => {
   }
 };
 
-export const uploadStudentAttendances = async (data) => {
+const uploadStudentAttendances = async (data) => {
   try {
     await set(studentAttendanceRef, data);
     return 1;
@@ -79,7 +79,7 @@ export const uploadStudentAttendances = async (data) => {
 
 const feesByMonthRef = ref(db, "Fees/feesByMonth");
 
-export const fetchFeesByMonth = async () => {
+const fetchFeesByMonth = async () => {
   const snapshot = await get(feesByMonthRef);
   if (snapshot.exists()) {
     return snapshot.val();
@@ -89,7 +89,7 @@ export const fetchFeesByMonth = async () => {
   }
 };
 
-export const uploadFeesByMonth = async (data) => {
+const uploadFeesByMonth = async (data) => {
   try {
     await set(feesByMonthRef, data);
     return 1;
@@ -101,7 +101,7 @@ export const uploadFeesByMonth = async (data) => {
 
 const studentFeesRef = ref(db, "Fees/StudentFees");
 
-export const fetchStudentFees = async () => {
+const fetchStudentFees = async () => {
   const snapshot = await get(studentFeesRef);
   if (snapshot.exists()) {
     return snapshot.val();
@@ -111,7 +111,7 @@ export const fetchStudentFees = async () => {
   }
 };
 
-export const uploadStudentFees = async (data) => {
+const uploadStudentFees = async (data) => {
   try {
     await set(studentFeesRef, data);
     return 1;
@@ -119,4 +119,18 @@ export const uploadStudentFees = async (data) => {
     console.error("Error setting student fee data:", error);
     return null;
   }
+};
+
+export {
+  fetchAllData,
+  fetchAllStudents,
+  uploadAllStudents,
+  fetchAttendanceDates,
+  uploadAttendanceDates,
+  fetchStudentAttendances,
+  uploadStudentAttendances,
+  fetchFeesByMonth,
+  uploadFeesByMonth,
+  fetchStudentFees,
+  uploadStudentFees,
 };

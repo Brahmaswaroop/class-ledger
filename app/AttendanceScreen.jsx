@@ -2,12 +2,10 @@ import { View, ScrollView, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
 import {
-  fetchAllStudents,
-  fetchAttendanceDates,
-  fetchStudentAttendances,
   uploadAttendanceDates,
   uploadStudentAttendances,
 } from "@/utils/DatabaseMethods";
+import { useAppData } from "@/utils/AppDataContext";
 import ToggleButton from "@/components/ToggleButton";
 import ActionButton from "@/components/ActionButton";
 
@@ -16,19 +14,17 @@ const AttendanceRecords = () => {
   const [studentAttendance, setStudentAttendance] = useState({});
   const [students, setStudents] = useState({});
   const [selectedDate, setSelectedDate] = useState(null);
-
-  const fetchData = async () => {
-    const data1 = await fetchAttendanceDates();
-    setAttendanceDates(data1 || {});
-    const data2 = await fetchStudentAttendances();
-    setStudentAttendance(data2 || {});
-    const studentsData = await fetchAllStudents();
-    setStudents(studentsData || {});
-  };
+  const {
+    attendanceDates: contextDates,
+    studentAttendances: contextAttendance,
+    students: contextStudents,
+  } = useAppData();
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    setAttendanceDates(contextDates || {});
+    setStudentAttendance(contextAttendance || {});
+    setStudents(contextStudents || {});
+  }, [contextAttendance, contextDates, contextStudents]);
 
   const uploadData = async () => {
     if (Object.keys(attendanceDates).length > 0) {
@@ -78,12 +74,9 @@ const AttendanceRecords = () => {
           <ActionButton
             title={"Submit"}
             handlePress={() => {
-              var hasAttendanceMarked = false;
-              Object.values(studentAttendance).forEach((dates) => {
-                if (dates?.includes(selectedDate)) {
-                  hasAttendanceMarked = true;
-                }
-              });
+              const hasAttendanceMarked = Object.values(studentAttendance).some(
+                (dates) => dates?.includes(selectedDate)
+              );
               if (hasAttendanceMarked) {
                 setAttendanceDates((prev) => ({
                   ...prev,
@@ -112,12 +105,12 @@ export default AttendanceRecords;
 
 const styles = StyleSheet.create({
   main_container: {
-    flex: "auto",
+    flex: 1,
     padding: 10,
     backgroundColor: "#E8E6F3",
   },
   section_container: {
-    flex: "auto",
+    flex: 1,
     padding: 18,
     marginBottom: 20,
     backgroundColor: "#fff",
