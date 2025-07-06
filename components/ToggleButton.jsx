@@ -7,16 +7,17 @@ export default function ToggleButton({
   title,
   onPress,
 }) {
+  const [presentState, setPresentState] = React.useState(currentState);
   const handlePress = () => {
-    const newCurrentState = !currentState;
-    onPress(Id, newCurrentState);
+    setPresentState(!presentState);
+    onPress(Id, presentState);
   };
   return (
     <View>
       <TouchableOpacity
         style={[
           styles.menuButtons,
-          { backgroundColor: currentState ? "#03C03C" : "#FEFEFA" },
+          { backgroundColor: presentState ? "#03C03C" : "#FEFEFA" },
         ]}
         onPress={() => handlePress()}
       >

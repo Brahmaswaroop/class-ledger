@@ -11,10 +11,10 @@ const fetchAllData = async () => {
   }
 };
 
-const studentRef = (id = "") => ref(db, `Students/${id}`);
+const studentRef = (id) => ref(db, `Students/${id}`);
 
-const fetchAllStudents = async () => {
-  const snapshot = await get(studentRef());
+const fetchStudents = async (id = "") => {
+  const snapshot = await get(studentRef(id));
   if (snapshot.exists()) {
     return snapshot.val();
   } else {
@@ -23,7 +23,7 @@ const fetchAllStudents = async () => {
   }
 };
 
-const uploadAllStudents = async (data) => {
+const uploadStudents = async (data) => {
   try {
     await set(ref(db, "Students/"), data);
     return 1;
@@ -33,10 +33,10 @@ const uploadAllStudents = async (data) => {
   }
 };
 
-const attendanceDatesRef = ref(db, "Attendance/MarkedDates");
+const attendanceByDatesRef = ref(db, "Attendance/AttendanceByDates");
 
-const fetchAttendanceDates = async () => {
-  const snapshot = await get(attendanceDatesRef);
+const fetchAttendanceByDates = async () => {
+  const snapshot = await get(attendanceByDatesRef);
   if (snapshot.exists()) {
     return snapshot.val();
   } else {
@@ -45,9 +45,9 @@ const fetchAttendanceDates = async () => {
   }
 };
 
-const uploadAttendanceDates = async (data) => {
+const uploadAttendanceByDates = async (data) => {
   try {
-    await set(attendanceDatesRef, data);
+    await set(attendanceByDatesRef, data);
     return 1;
   } catch (error) {
     console.error("Error setting attendance dates:", error);
@@ -55,21 +55,21 @@ const uploadAttendanceDates = async (data) => {
   }
 };
 
-const studentAttendanceRef = ref(db, "Attendance/StudentAttendance");
+const AttendanceByStudentRef = ref(db, "Attendance/AttendanceByStudent");
 
-const fetchStudentAttendances = async () => {
-  const snapshot = await get(studentAttendanceRef);
+const fetchAttendanceByStudent = async () => {
+  const snapshot = await get(AttendanceByStudentRef);
   if (snapshot.exists()) {
     return snapshot.val();
   } else {
-    console.log("No student attendance available");
+    console.log("No AttendancesByStudent available");
     return null;
   }
 };
 
-const uploadStudentAttendances = async (data) => {
+const uploadAttendanceByStudent = async (data) => {
   try {
-    await set(studentAttendanceRef, data);
+    await set(AttendanceByStudentRef, data);
     return 1;
   } catch (error) {
     console.error("Error setting attendance:", error);
@@ -123,12 +123,12 @@ const uploadStudentFees = async (data) => {
 
 export {
   fetchAllData,
-  fetchAllStudents,
-  uploadAllStudents,
-  fetchAttendanceDates,
-  uploadAttendanceDates,
-  fetchStudentAttendances,
-  uploadStudentAttendances,
+  fetchStudents,
+  uploadStudents,
+  fetchAttendanceByDates,
+  uploadAttendanceByDates,
+  fetchAttendanceByStudent,
+  uploadAttendanceByStudent,
   fetchFeesByMonth,
   uploadFeesByMonth,
   fetchStudentFees,

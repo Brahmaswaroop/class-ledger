@@ -3,9 +3,9 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   fetchAllData,
-  fetchAllStudents,
-  fetchAttendanceDates,
-  fetchStudentAttendances,
+  fetchStudents,
+  fetchAttendanceByDates,
+  fetchAttendanceByStudent,
   fetchFeesByMonth,
   fetchStudentFees,
 } from "@/utils/DatabaseMethods";
@@ -23,38 +23,26 @@ export const useAppData = () => {
 export const AppDataProvider = ({ children }) => {
   const [allData, setAllData] = useState({});
   const [students, setStudents] = useState({});
-  const [attendanceDates, setAttendanceDates] = useState({});
-  const [studentAttendance, setStudentAttendance] = useState({});
+  const [attendanceByDates, setAttendanceByDates] = useState({});
+  const [attendanceByStudent, setAttendanceByStudent] = useState({});
   const [feesByMonth, setFeesByMonth] = useState({});
   const [studentFees, setStudentFees] = useState({});
 
-  // Load from AsyncStorage on app start
   useEffect(() => {
     (async () => {
       try {
-        // const stored = await AsyncStorage.getItem("appData");
-        // if (stored) {
-        //   const parsed = JSON.parse(stored);
-        //   setStudents(parsed.students || {});
-        //   setFeesByMonth(parsed.feesByMonth || {});
-        //   setStudentAttendance(parsed.studentAttendance || {});
-        //   setStudentFees(parsed.studentFees || {});
-        //   setAllData(parsed.allData || {});
-        // }
-        {
-          const data1 = await fetchAllStudents();
-          const data2 = await fetchFeesByMonth();
-          const data3 = await fetchStudentAttendances();
-          const data4 = await fetchStudentFees();
-          const data5 = await fetchAllData();
-          const data6 = await fetchAttendanceDates();
-          setStudents(data1);
-          setFeesByMonth(data2);
-          setStudentAttendance(data3);
-          setStudentFees(data4);
-          setAllData(data5);
-          setAttendanceDates(data6);
-        }
+        const data1 = await fetchStudents();
+        const data2 = await fetchAttendanceByDates();
+        const data3 = await fetchAttendanceByStudent();
+        const data4 = await fetchFeesByMonth();
+        const data5 = await fetchStudentFees();
+        const data6 = await fetchAllData();
+        setStudents(data1);
+        setAttendanceByDates(data2);
+        setAttendanceByStudent(data3);
+        setFeesByMonth(data4);
+        setStudentFees(data5);
+        setAllData(data6);
       } catch (err) {
         console.log("Error loading local data:", err);
       }
@@ -64,24 +52,24 @@ export const AppDataProvider = ({ children }) => {
   const setAll = async ({
     allData,
     students,
-    attendanceDates,
-    studentAttendance,
+    attendanceByDates,
+    attendanceByStudent,
     feesByMonth,
     studentFees,
   }) => {
     const dataToStore = {
       students: students || {},
       feesByMonth: feesByMonth || {},
-      attendanceDates: attendanceDates || {},
-      studentAttendance: studentAttendance || {},
+      attendanceByDates: attendanceByDates || {},
+      attendanceByStudent: attendanceByStudent || {},
       studentFees: studentFees || {},
       allData: allData || {},
     };
 
     setStudents(dataToStore.students);
     setFeesByMonth(dataToStore.feesByMonth);
-    setAttendanceDates(dataToStore.attendanceDates);
-    setStudentAttendance(dataToStore.studentAttendance);
+    setAttendanceByDates(dataToStore.attendanceByDates);
+    setAttendanceByStudent(dataToStore.attendanceByStudent);
     setStudentFees(dataToStore.studentFees);
     setAllData(dataToStore.allData);
 
@@ -97,8 +85,8 @@ export const AppDataProvider = ({ children }) => {
       value={{
         students,
         feesByMonth,
-        attendanceDates,
-        studentAttendance,
+        attendanceByDates,
+        attendanceByStudent,
         studentFees,
         allData,
         setAll,

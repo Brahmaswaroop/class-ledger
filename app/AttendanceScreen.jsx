@@ -2,37 +2,33 @@ import { View, ScrollView, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
 import {
-  uploadAttendanceDates,
-  uploadStudentAttendances,
+  uploadAttendanceByStudent,
+  uploadAttendanceByDates,
 } from "@/utils/DatabaseMethods";
 import { useAppData } from "@/utils/AppDataContext";
 import ToggleButton from "@/components/ToggleButton";
 import ActionButton from "@/components/ActionButton";
 
 const AttendanceRecords = () => {
-  const [attendanceDates, setAttendanceDates] = useState({});
-  const [studentAttendance, setStudentAttendance] = useState({});
+  const [attendanceBydates, setAttendanceByDates] = useState({});
+  const [attendanceByStudents, setAttendanceByStudents] = useState({});
   const [students, setStudents] = useState({});
   const [selectedDate, setSelectedDate] = useState(null);
   const {
-    attendanceDates: contextDates,
-    studentAttendances: contextAttendance,
+    attendanceBydates: contextAttendanceBydates,
+    attendanceByStudents: contextAttendanceByStudents,
     students: contextStudents,
   } = useAppData();
-
   useEffect(() => {
-    setAttendanceDates(contextDates || {});
-    setStudentAttendance(contextAttendance || {});
+    setAttendanceByDates(contextAttendanceBydates || {});
+    setAttendanceByStudents(contextAttendanceByStudents || {});
     setStudents(contextStudents || {});
-  }, [contextAttendance, contextDates, contextStudents]);
+  }, [contextAttendanceByStudents, contextAttendanceBydates, contextStudents]);
+  const [hasChanged, setHasChanged] = useState(false);
 
   const uploadData = async () => {
-    if (Object.keys(attendanceDates).length > 0) {
-      const result = await uploadAttendanceDates(attendanceDates);
-    }
-    if (Object.keys(studentAttendance).length > 0) {
-      const result = await uploadStudentAttendances(studentAttendance);
-    }
+    await uploadAttendanceByDates(attendanceBydates);
+    await uploadAttendanceByStudent(attendanceByStudents);
   };
 
   return (
@@ -42,7 +38,7 @@ const AttendanceRecords = () => {
           onDayPress={(day) => {
             setSelectedDate(day.dateString);
           }}
-          markedDates={attendanceDates}
+          markedDates={attendanceBydates}
           markingType={"multi-dot"}
         />
       </View>
@@ -54,19 +50,33 @@ const AttendanceRecords = () => {
               key={id}
               Id={id}
               title={student.name}
-              currentState={studentAttendance[id]?.includes(selectedDate)}
+              currentState={(attendanceByStudents[id] || []).includes(
+                selectedDate
+              )}
               onPress={(studentId, presentState) => {
-                const dates = studentAttendance[studentId] || [];
-                let updatedDates = dates;
-                if (presentState) {
-                  updatedDates = [...dates, selectedDate];
-                } else {
-                  updatedDates = dates.filter((date) => date !== selectedDate);
-                }
-                setStudentAttendance((prev) => ({
-                  ...prev,
-                  [studentId]: updatedDates,
-                }));
+                setAttendanceByStudents((prev) => {
+                  const dates = prev[studentId] || [];
+                  const updatedDates = presentState
+                    ? [...dates, selectedDate]
+                    : dates.filter((d) => d !== selectedDate);
+
+                  return {
+                    ...prev,
+                    [studentId]: updatedDates,
+                  };
+                });
+
+                setAttendanceByDates((prev) => {
+                  const currentList = prev[selectedDate] || [];
+                  const updatedList = presentState
+                    ? [...new Set([...currentList, studentId])]
+                    : currentList.filter((id) => id !== studentId);
+
+                  return {
+                    ...prev,
+                    [selectedDate]: updatedList,
+                  };
+                });
               }}
             />
           ))}
@@ -74,11 +84,11 @@ const AttendanceRecords = () => {
           <ActionButton
             title={"Submit"}
             handlePress={() => {
-              const hasAttendanceMarked = Object.values(studentAttendance).some(
-                (dates) => dates?.includes(selectedDate)
-              );
+              const hasAttendanceMarked = Object.values(
+                attendanceByStudents
+              ).some((dates) => dates?.includes(selectedDate));
               if (hasAttendanceMarked) {
-                setAttendanceDates((prev) => ({
+                setAttendanceByDates((prev) => ({
                   ...prev,
                   [selectedDate]: {
                     selected: true,
@@ -86,10 +96,11 @@ const AttendanceRecords = () => {
                   },
                 }));
               } else {
-                setAttendanceDates((prev) => ({
-                  ...prev,
-                  [selectedDate]: {},
-                }));
+                setAttendanceByDates((prev) => {
+                  const updated = { ...prev };
+                  delete updated[selectedDate];
+                  return updated;
+                });
               }
               uploadData();
               setSelectedDate(null);
