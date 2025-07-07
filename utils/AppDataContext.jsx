@@ -27,6 +27,7 @@ export const AppDataProvider = ({ children }) => {
   const [attendanceByStudent, setAttendanceByStudent] = useState({});
   const [feesByMonth, setFeesByMonth] = useState({});
   const [studentFees, setStudentFees] = useState({});
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -47,38 +48,38 @@ export const AppDataProvider = ({ children }) => {
         console.log("Error loading local data:", err);
       }
     })();
-  }, []);
+  }, [refresh]);
 
-  const setAll = async ({
-    allData,
-    students,
-    attendanceByDates,
-    attendanceByStudent,
-    feesByMonth,
-    studentFees,
-  }) => {
-    const dataToStore = {
-      students: students || {},
-      feesByMonth: feesByMonth || {},
-      attendanceByDates: attendanceByDates || {},
-      attendanceByStudent: attendanceByStudent || {},
-      studentFees: studentFees || {},
-      allData: allData || {},
-    };
+  // const setAll = async ({
+  //   allData,
+  //   students,
+  //   attendanceByDates,
+  //   attendanceByStudent,
+  //   feesByMonth,
+  //   studentFees,
+  // }) => {
+  //   const dataToStore = {
+  //     students: students || {},
+  //     feesByMonth: feesByMonth || {},
+  //     attendanceByDates: attendanceByDates || {},
+  //     attendanceByStudent: attendanceByStudent || {},
+  //     studentFees: studentFees || {},
+  //     allData: allData || {},
+  //   };
 
-    setStudents(dataToStore.students);
-    setFeesByMonth(dataToStore.feesByMonth);
-    setAttendanceByDates(dataToStore.attendanceByDates);
-    setAttendanceByStudent(dataToStore.attendanceByStudent);
-    setStudentFees(dataToStore.studentFees);
-    setAllData(dataToStore.allData);
+  //   setStudents(dataToStore.students);
+  //   setFeesByMonth(dataToStore.feesByMonth);
+  //   setAttendanceByDates(dataToStore.attendanceByDates);
+  //   setAttendanceByStudent(dataToStore.attendanceByStudent);
+  //   setStudentFees(dataToStore.studentFees);
+  //   setAllData(dataToStore.allData);
 
-    try {
-      await AsyncStorage.setItem("appData", JSON.stringify(dataToStore));
-    } catch (err) {
-      console.log("Error saving local data:", err);
-    }
-  };
+  //   try {
+  //     await AsyncStorage.setItem("appData", JSON.stringify(dataToStore));
+  //   } catch (err) {
+  //     console.log("Error saving local data:", err);
+  //   }
+  // };
 
   return (
     <AppDataContext.Provider
@@ -89,7 +90,8 @@ export const AppDataProvider = ({ children }) => {
         attendanceByStudent,
         studentFees,
         allData,
-        setAll,
+        refresh,
+        setRefresh,
       }}
     >
       {children}
