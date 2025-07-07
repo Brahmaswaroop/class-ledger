@@ -9,7 +9,6 @@ export default function App() {
   if (!isConnected) {
     return <Redirect href="/NoInternetScreen" />;
   }
-  console.log("App component rendered");
 
   return (
     <ScrollView style={styles.container}>

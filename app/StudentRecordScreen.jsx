@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { Card, Text, IconButton, Menu } from "react-native-paper";
-import { fetchAllStudents, uploadAllStudents } from "@/utils/DatabaseMethods"; // Adjust the import path as necessary
+import { uploadAllStudents } from "@/utils/DatabaseMethods"; // Adjust the import path as necessary
 import EditPopup from "@/components/StudentDetailsEditorPopup";
 import DeleteConfirmPopup from "@/components/DeleteConfirmPopup";
+import { useAppData } from "@/utils/AppDataContext";
 
 export default StudentRecordScreen = () => {
   // Part 1: Fetching the students data
   const [students, setStudents] = useState({});
-  const fetchStudents = async () => {
-    const data = await fetchAllStudents();
-    setStudents(data || {});
-  };
+  const { students: contextStudents } = useAppData();
+
   useEffect(() => {
-    fetchStudents();
-  }, []);
+    setStudents(contextStudents);
+  }, [contextStudents]);
 
   const uploadStudents = async () => {
     console.log(students);
@@ -23,9 +22,6 @@ export default StudentRecordScreen = () => {
       console.log("Upload result:", result);
     }
   };
-  useEffect(() => {
-    uploadStudents();
-  }, [students]);
 
   // Part 2: Handling the menu and popups
   const [showMenu, setShowMenu] = useState(null);
@@ -54,6 +50,7 @@ export default StudentRecordScreen = () => {
           }}
           onSave={(updatedStudentsList) => {
             setStudents(updatedStudentsList);
+            uploadStudents();
           }}
         />
       )}
@@ -68,6 +65,7 @@ export default StudentRecordScreen = () => {
           }}
           onDelete={(updatedStudentsList) => {
             setStudents(updatedStudentsList);
+            uploadStudents();
           }}
         />
       )}
@@ -123,7 +121,8 @@ export default StudentRecordScreen = () => {
                 <Text style={styles.cardContent}>ID: {id}</Text>
                 {Object.entries(student).map(([key, value]) => (
                   <Text key={id + key} style={styles.cardContent}>
-                    {key}: {value}
+                    {key}:{" "}
+                    {typeof value === "object" ? JSON.stringify(value) : value}
                   </Text>
                 ))}
               </Card.Content>

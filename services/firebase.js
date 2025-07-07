@@ -1,4 +1,4 @@
-import { initializeApp, getApps, getApp } from "firebase/app";
+import { initializeApp, getApps } from "firebase/app";
 import {
   initializeAuth,
   getAuth,
@@ -20,18 +20,13 @@ const firebaseConfig = {
   measurementId: "G-Q70RJY8NQ2",
 };
 
-// ✅ Only initialize app if it hasn't been initialized already
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+// ✅ Initialize Firebase app
+const app = initializeApp(firebaseConfig);
 
-// ✅ Initialize Auth only if not already done
-let auth;
-try {
-  auth = getAuth(app);
-} catch (e) {
-  auth = initializeAuth(app, {
-    persistence: getReactNativePersistence(AsyncStorage),
-  });
-}
+// ✅ Initialize Firebase Auth with persistence only once
+let auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage),
+});
 
 const db = getDatabase(app);
 const googleProvider = new GoogleAuthProvider();

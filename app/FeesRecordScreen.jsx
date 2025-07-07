@@ -1,12 +1,7 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { React, useState, useEffect } from "react";
-import {
-  fetchAllStudents,
-  fetchFeesByMonth,
-  fetchStudentFees,
-  uploadFeesByMonth,
-  uploadStudentFees,
-} from "@/utils/DatabaseMethods";
+import { uploadFeesByMonth, uploadStudentFees } from "@/utils/DatabaseMethods";
+import { useAppData } from "@/utils/AppDataContext";
 import MonthPickerModal from "@/components/MonthPickerModal";
 import ToggleButton from "@/components/ToggleButton";
 import ActionButton from "@/components/ActionButton";
@@ -17,20 +12,17 @@ export default FeesRecordScreen = () => {
   const [studentFees, setStudentFees] = useState({});
   const [selectedMonth, setSelectedMonth] = useState(null);
 
-  const fetchData = async () => {
-    const studentsData = await fetchAllStudents();
-    setStudents(studentsData || {});
-    const feesData = await fetchFeesByMonth();
-    setFeesByMonth(feesData || {});
-    const studentFeesData = await fetchStudentFees();
-    setStudentFees(studentFeesData || {});
-    console.log("Fetched fees by month:", feesData);
-    console.log("Fetched student fees:", studentFeesData);
-  };
+  const {
+    students: contextStudents,
+    feesByMonth: contextFeesByMonth,
+    studentFees: contextFees,
+  } = useAppData();
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    setStudents(contextStudents || {});
+    setFeesByMonth(contextFeesByMonth || {});
+    setStudentFees(contextFees || {});
+  }, [contextFeesByMonth, contextStudents, contextFees]);
 
   const uploadData = async () => {
     if (Object.keys(feesByMonth).length > 0) {

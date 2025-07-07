@@ -1,7 +1,7 @@
 import { db } from "@/services/firebase";
 import { ref, set, get } from "firebase/database";
 
-export const fetchAllData = async () => {
+const fetchAllData = async () => {
   const snapshot = await get(ref(db));
   if (snapshot.exists()) {
     return snapshot.val();
@@ -11,10 +11,10 @@ export const fetchAllData = async () => {
   }
 };
 
-const studentRef = (id = "") => ref(db, `Students/${id}`);
+const studentRef = (id) => ref(db, `Students/${id}`);
 
-export const fetchAllStudents = async () => {
-  const snapshot = await get(studentRef());
+const fetchStudents = async (id = "") => {
+  const snapshot = await get(studentRef(id));
   if (snapshot.exists()) {
     return snapshot.val();
   } else {
@@ -23,7 +23,7 @@ export const fetchAllStudents = async () => {
   }
 };
 
-export const uploadAllStudents = async (data) => {
+const uploadStudents = async (data) => {
   try {
     await set(ref(db, "Students/"), data);
     return 1;
@@ -33,10 +33,10 @@ export const uploadAllStudents = async (data) => {
   }
 };
 
-const attendanceDatesRef = ref(db, "Attendance/MarkedDates");
+const attendanceByDatesRef = ref(db, "Attendance/AttendanceByDates");
 
-export const fetchAttendanceDates = async () => {
-  const snapshot = await get(attendanceDatesRef);
+const fetchAttendanceByDates = async () => {
+  const snapshot = await get(attendanceByDatesRef);
   if (snapshot.exists()) {
     return snapshot.val();
   } else {
@@ -45,9 +45,9 @@ export const fetchAttendanceDates = async () => {
   }
 };
 
-export const uploadAttendanceDates = async (data) => {
+const uploadAttendanceByDates = async (data) => {
   try {
-    await set(attendanceDatesRef, data);
+    await set(attendanceByDatesRef, data);
     return 1;
   } catch (error) {
     console.error("Error setting attendance dates:", error);
@@ -55,21 +55,21 @@ export const uploadAttendanceDates = async (data) => {
   }
 };
 
-const studentAttendanceRef = ref(db, "Attendance/StudentAttendance");
+const AttendanceByStudentRef = ref(db, "Attendance/AttendanceByStudent");
 
-export const fetchStudentAttendances = async () => {
-  const snapshot = await get(studentAttendanceRef);
+const fetchAttendanceByStudent = async () => {
+  const snapshot = await get(AttendanceByStudentRef);
   if (snapshot.exists()) {
     return snapshot.val();
   } else {
-    console.log("No student attendance available");
+    console.log("No AttendancesByStudent available");
     return null;
   }
 };
 
-export const uploadStudentAttendances = async (data) => {
+const uploadAttendanceByStudent = async (data) => {
   try {
-    await set(studentAttendanceRef, data);
+    await set(AttendanceByStudentRef, data);
     return 1;
   } catch (error) {
     console.error("Error setting attendance:", error);
@@ -79,7 +79,7 @@ export const uploadStudentAttendances = async (data) => {
 
 const feesByMonthRef = ref(db, "Fees/feesByMonth");
 
-export const fetchFeesByMonth = async () => {
+const fetchFeesByMonth = async () => {
   const snapshot = await get(feesByMonthRef);
   if (snapshot.exists()) {
     return snapshot.val();
@@ -89,7 +89,7 @@ export const fetchFeesByMonth = async () => {
   }
 };
 
-export const uploadFeesByMonth = async (data) => {
+const uploadFeesByMonth = async (data) => {
   try {
     await set(feesByMonthRef, data);
     return 1;
@@ -101,7 +101,7 @@ export const uploadFeesByMonth = async (data) => {
 
 const studentFeesRef = ref(db, "Fees/StudentFees");
 
-export const fetchStudentFees = async () => {
+const fetchStudentFees = async () => {
   const snapshot = await get(studentFeesRef);
   if (snapshot.exists()) {
     return snapshot.val();
@@ -111,7 +111,7 @@ export const fetchStudentFees = async () => {
   }
 };
 
-export const uploadStudentFees = async (data) => {
+const uploadStudentFees = async (data) => {
   try {
     await set(studentFeesRef, data);
     return 1;
@@ -119,4 +119,18 @@ export const uploadStudentFees = async (data) => {
     console.error("Error setting student fee data:", error);
     return null;
   }
+};
+
+export {
+  fetchAllData,
+  fetchStudents,
+  uploadStudents,
+  fetchAttendanceByDates,
+  uploadAttendanceByDates,
+  fetchAttendanceByStudent,
+  uploadAttendanceByStudent,
+  fetchFeesByMonth,
+  uploadFeesByMonth,
+  fetchStudentFees,
+  uploadStudentFees,
 };
