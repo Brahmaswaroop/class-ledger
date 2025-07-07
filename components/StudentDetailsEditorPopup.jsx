@@ -17,7 +17,13 @@ const updateStudent = (studentsList, studentId, studentDetails) => {
   return { ...studentsList, [studentId]: studentDetails }; // RETURN a NEW object
 };
 
-const EditPopup = ({ studentsList, student, onClose, onSave, IsNewEntry }) => {
+export default StudentDetailsEditorPopup = ({
+  studentsList,
+  student,
+  onClose,
+  onSave,
+  IsNewEntry,
+}) => {
   const [studentDetails, setStudentDetails] = useState(
     IsNewEntry ? {} : student.data
   );
@@ -36,6 +42,7 @@ const EditPopup = ({ studentsList, student, onClose, onSave, IsNewEntry }) => {
     onSave(updatedStudentsList);
     onClose();
   };
+
   return (
     <Portal>
       <Dialog visible onDismiss={onClose}>
@@ -121,8 +128,6 @@ const EditPopup = ({ studentsList, student, onClose, onSave, IsNewEntry }) => {
     </Portal>
   );
 };
-
-export default EditPopup;
 
 const styles = StyleSheet.create({
   text: { marginBottom: 10 },

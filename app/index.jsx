@@ -1,28 +1,26 @@
 import React from "react";
 import { View, StyleSheet, Image, ScrollView } from "react-native";
-import MenuButtons from "@/components/buttons/MenuButtons";
-import { useInternetStatus } from "@/components/useInternetStatus";
+import NavigationButton from "@/components/NavigationButton";
+import { useInternetStatus } from "@/utils/useInternetStatus";
 import { Redirect } from "expo-router";
 
 export default function App() {
   const isConnected = useInternetStatus();
-
   if (!isConnected) {
-    return <Redirect href="NoInternet" />;
+    return <Redirect href="/NoInternetScreen" />;
   }
 
-  console.log("App component rendered");
   return (
     <ScrollView style={styles.container}>
       <Image
-        source={require("@/assets/Class ledger.jpg")}
+        source={require("@/assets/images/class_ledger.jpg")}
         style={styles.banner}
         resizeMode="cover"
       />
       <View style={styles.buttonsContainer}>
-        <MenuButtons title="Attendance" link="/attendance_records" />
-        <MenuButtons title="Student details" link="/student_records" />
-        <MenuButtons title="Fees Ledger" link="fees_records" />
+        <NavigationButton title="Attendance" link="/AttendanceScreen" />
+        <NavigationButton title="Student details" link="/StudentRecordScreen" />
+        <NavigationButton title="Fees Ledger" link="/FeesRecordScreen" />
       </View>
     </ScrollView>
   );

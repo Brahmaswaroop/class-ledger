@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  TouchableWithoutFeedback,
 } from "react-native";
 
 const years = Array.from({ length: 131 }, (_, i) => 1970 + i);
@@ -40,7 +41,7 @@ function CustomList({ data, dataRef, setItem }) {
         <TouchableOpacity
           style={{
             ...styles.option,
-            backgroundColor: selected == item ? "#25A18E" : "#f8f8f8",
+            backgroundColor: selected == item ? "#00aeef" : "#f8f8f8",
           }}
           onPress={() => {
             setItem(item);
@@ -87,53 +88,57 @@ export default function MonthPickerModal({ onClose }) {
       <TouchableOpacity
         onPress={() => {
           setModalVisible(true);
-          setSelectedMonth(null);
-          setSelectedYear(null);
         }}
         style={styles.selectBox}
       >
         {selectedMonth && selectedYear ? (
-          <Text>{`${selectedMonth} ${selectedYear}`}</Text>
+          <Text
+            style={styles.selectBoxText}
+          >{`${selectedMonth} ${selectedYear}`}</Text>
         ) : (
-          <Text>Select Month and Year</Text>
+          <Text style={styles.selectBoxText}>Select Month and Year</Text>
         )}
       </TouchableOpacity>
 
       <Modal visible={modalVisible} animationType="fade" transparent>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalBody}>
-              <CustomList
-                data={years}
-                dataRef={yearListRef}
-                setItem={setSelectedYear}
-              />
-              <CustomList
-                data={months}
-                dataRef={monthListRef}
-                setItem={setSelectedMonth}
-              />
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalBody}>
+                <CustomList
+                  data={years}
+                  dataRef={yearListRef}
+                  setItem={setSelectedYear}
+                />
+                <CustomList
+                  data={months}
+                  dataRef={monthListRef}
+                  setItem={setSelectedMonth}
+                />
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  if (selectedMonth && selectedYear) {
+                    setModalVisible(false);
+                    onClose(selectedYear, months.indexOf(selectedMonth) + 1);
+                  } else {
+                    alert("Please select both month and year.");
+                  }
+                }}
+                style={{
+                  backgroundColor: "#1a1a1d",
+                  padding: 10,
+                  borderRadius: 5,
+                  marginTop: 10,
+                }}
+              >
+                <Text style={{ color: "white", textAlign: "center" }}>
+                  Done
+                </Text>
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              onPress={() => {
-                if (selectedMonth && selectedYear) {
-                  setModalVisible(false);
-                  onClose(selectedYear, months.indexOf(selectedMonth) + 1);
-                } else {
-                  alert("Please select both month and year.");
-                }
-              }}
-              style={{
-                backgroundColor: "#190087",
-                padding: 10,
-                borderRadius: 5,
-                marginTop: 10,
-              }}
-            >
-              <Text style={{ color: "white", textAlign: "center" }}>Done</Text>
-            </TouchableOpacity>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </View>
   );
@@ -142,10 +147,16 @@ export default function MonthPickerModal({ onClose }) {
 const styles = StyleSheet.create({
   selectBox: {
     borderWidth: 1,
-    borderColor: "#000",
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 20,
+    backgroundColor: "#1a1a1d",
+    padding: 18,
+    borderRadius: 8,
+    marginBottom: 8,
+    alignItems: "center",
+  },
+  selectBoxText: {
+    color: "#e8e6f3",
+    fontSize: 18,
+    fontWeight: "500",
   },
   modalOverlay: {
     flex: 1,
@@ -175,6 +186,7 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: 16,
-    color: "#004E64",
+    fontWeight: "500",
+    color: "#1a1a1d",
   },
 });
