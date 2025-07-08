@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
-import { Card, Text, IconButton, Menu } from "react-native-paper";
+import { Card, Text, IconButton, Menu, FAB } from "react-native-paper";
+
 import { uploadAllStudents } from "@/utils/DatabaseMethods"; // Adjust the import path as necessary
 import EditPopup from "@/components/StudentDetailsEditorPopup";
 import DeleteConfirmPopup from "@/components/DeleteConfirmPopup";
@@ -9,18 +10,24 @@ import { useAppData } from "@/utils/AppDataContext";
 export default StudentRecordScreen = () => {
   // Part 1: Fetching the students data
   const [students, setStudents] = useState({});
-  const { students: contextStudents } = useAppData();
+  const { students: contextStudents, refresh, setRefresh } = useAppData();
 
   useEffect(() => {
     setStudents(contextStudents);
-  }, [contextStudents]);
+  }, [refresh, contextStudents]);
 
   const uploadStudents = async () => {
     console.log(students);
-    if (Object.keys(students).length > 0) {
+    if (!Object.keys(students).length) return;
+    setUploading(true);
+    try {
       const result = await uploadAllStudents(students);
       console.log("Upload result:", result);
+      setRefresh((prev) => !prev);
+    } catch (e) {
+      console.error("Upload failed", e);
     }
+    setUploading(false);
   };
 
   // Part 2: Handling the menu and popups
@@ -106,12 +113,12 @@ export default StudentRecordScreen = () => {
                     }}
                   />
                   <Menu.Item
+                    title="Delete"
                     onPress={() => {
                       setShowMenu(null);
                       setSelectedStudent({ id: id, data: { ...student } });
                       setShowDeletePopup(true);
                     }}
-                    title="Delete"
                   />
                 </Menu>
               )}
@@ -129,21 +136,13 @@ export default StudentRecordScreen = () => {
             )}
           </Card>
         ))}
-        <Card
-          style={styles.card}
-          onPress={() => {
-            setIsNewStudent(true);
-            setShowInputPopup(true);
-          }}
-        >
-          <Card.Title
-            titleStyle={styles.cardTitle}
-            title="Add Student"
-            left={(props) => (
-              <IconButton {...props} icon="plus" iconColor="#004e64" />
-            )}
-          />
-        </Card>
+        <FAB
+          style={styles.fab}
+          icon="plus"
+          onPress={() => openEditor()}
+          color="white"
+          label="Add Student"
+        />
       </ScrollView>
     </>
   );
@@ -154,10 +153,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   menu: {
-    width: 200,
+    width: 150,
     backgroundColor: "#f8f8f8",
     borderRadius: 8,
-    padding: 10,
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
   },
   card: {
@@ -179,5 +177,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontStyle: "italic",
     fontFamily: "calibri",
+  },
+  fab: {
+    padding: 8,
+    fontSize: 18,
+    alignItems: "center",
+    fontWeight: "bold",
+    fontFamily: "calibri",
+    backgroundColor: "#004e64",
+    elevation: 4,
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
   },
 });

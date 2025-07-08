@@ -8,11 +8,6 @@ const newStudentId = (studentsList) => {
   return `STD${String(studentCountNum + 1).padStart(3, "0")}`;
 };
 
-const addStudent = (studentsList, studentDetails) => {
-  const studentId = newStudentId(studentsList);
-  return { ...studentsList, [studentId]: studentDetails }; // RETURN a NEW object
-};
-
 const updateStudent = (studentsList, studentId, studentDetails) => {
   return { ...studentsList, [studentId]: studentDetails }; // RETURN a NEW object
 };
@@ -29,19 +24,29 @@ export default StudentDetailsEditorPopup = ({
   );
 
   const handleSave = () => {
-    let updatedStudentsList;
-    if (IsNewEntry) {
-      updatedStudentsList = addStudent(studentsList, studentDetails);
-    } else {
-      updatedStudentsList = updateStudent(
-        studentsList,
-        student.id,
-        studentDetails
-      );
-    }
+    let updatedStudentsList = updateStudent(
+      studentsList,
+      IsNewEntry ? newStudentId(studentsList) : student.id,
+      studentDetails
+    );
     onSave(updatedStudentsList);
     onClose();
   };
+
+  // Helper function to render TextInput with common styles
+  const renderInput = (label, key, options = {}) => (
+    <TextInput
+      label={label}
+      value={studentDetails[key] || ""}
+      onChangeText={(text) =>
+        setStudentDetails((prev) => ({ ...prev, [key]: text }))
+      }
+      mode="outlined"
+      returnKeyType="enter"
+      style={styles.text}
+      {...options}
+    />
+  );
 
   return (
     <Portal>
@@ -50,58 +55,21 @@ export default StudentDetailsEditorPopup = ({
           {IsNewEntry ? "Add Student" : "Edit Student"}
         </Dialog.Title>
         <Dialog.Content>
-          <TextInput
-            label="Name"
-            value={studentDetails.name}
-            placeholder="Between 3 to 20 characters"
-            onSelectionChange={(text) =>
-              setStudentDetails((prev) => ({ ...prev, name: text }))
-            }
-            mode="outlined"
-            style={styles.name}
-          />
-          <TextInput
-            label="Age"
-            value={studentDetails.age}
-            onChangeText={(text) =>
-              setStudentDetails((prev) => ({ ...prev, age: text }))
-            }
-            keyboardType="numeric"
-            mode="outlined"
-            style={styles.age}
-          />
-          <TextInput
-            label="Class"
-            value={studentDetails.class}
-            placeholder="between 1 to 12"
-            onChangeText={(text) =>
-              setStudentDetails((prev) => ({ ...prev, class: text }))
-            }
-            keyboardType="numeric"
-            mode="outlined"
-            style={styles.class}
-          />
-          <TextInput
-            label="Date of Joining"
-            value={studentDetails.dateOfJoining}
-            placeholder="YYYY/MM/DD"
-            onChangeText={(text) =>
-              setStudentDetails((prev) => ({ ...prev, dateOfJoining: text }))
-            }
-            mode="outlined"
-            style={styles.dateOfJoining}
-          />
-          <TextInput
-            label="Fees assigned"
-            value={studentDetails.feesAssigned}
-            placeholder="Enter fees:"
-            onChangeText={(text) =>
-              setStudentDetails((prev) => ({ ...prev, feesAssigned: text }))
-            }
-            keyboardType="numeric"
-            mode="outlined"
-            style={styles.feesAssigned}
-          />
+          {renderInput("Name", "name", {
+            placeholder: "3–20 characters",
+            autoFocus: { IsNewEntry },
+          })}
+          {renderInput("Class", "class", {
+            placeholder: "between 1 to 12",
+            keyboardType: "numeric",
+          })}
+          {renderInput("Date of Joining", "dateOfJoining", {
+            placeholder: "YYYY/MM/DD",
+          })}
+          {renderInput("Fees assigned", "feesAssigned", {
+            placeholder: "Enter fees:",
+            keyboardType: "numeric",
+          })}
         </Dialog.Content>
         <Dialog.Actions>
           <Button onPress={onClose}>Cancel</Button>
@@ -109,7 +77,6 @@ export default StudentDetailsEditorPopup = ({
             onPress={() => {
               if (
                 !studentDetails.name ||
-                !studentDetails.age ||
                 !studentDetails.class ||
                 !studentDetails.dateOfJoining ||
                 !studentDetails.feesAssigned
@@ -118,7 +85,6 @@ export default StudentDetailsEditorPopup = ({
                 return;
               }
               handleSave();
-              onClose();
             }}
           >
             Save
