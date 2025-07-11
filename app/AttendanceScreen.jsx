@@ -10,36 +10,84 @@ import ToggleButton from "@/components/ToggleButton";
 import ActionButton from "@/components/ActionButton";
 
 const AttendanceRecords = () => {
-  const [attendanceBydates, setAttendanceByDates] = useState({});
-  const [attendanceByStudents, setAttendanceByStudents] = useState({});
+  const {
+    attendanceByDates: contextAttendanceByDates,
+    attendanceByStudent: contextAttendanceByStudent,
+    students: contextStudents,
+    refresh,
+    setRefresh,
+  } = useAppData();
+
+  const [attendanceByDates, setAttendanceByDates] = useState({});
+  const [attendanceByStudent, setAttendanceByStudent] = useState({});
+  const [calendarDates, setCalendarDates] = useState({});
   const [students, setStudents] = useState({});
   const [selectedDate, setSelectedDate] = useState(null);
-  const {
-    attendanceBydates: contextAttendanceBydates,
-    attendanceByStudents: contextAttendanceByStudents,
-    students: contextStudents,
-  } = useAppData();
-  useEffect(() => {
-    setAttendanceByDates(contextAttendanceBydates || {});
-    setAttendanceByStudents(contextAttendanceByStudents || {});
-    setStudents(contextStudents || {});
-  }, [contextAttendanceByStudents, contextAttendanceBydates, contextStudents]);
   const [hasChanged, setHasChanged] = useState(false);
 
-  const uploadData = async () => {
-    await uploadAttendanceByDates(attendanceBydates);
-    await uploadAttendanceByStudent(attendanceByStudents);
+  // useEffect(() => {
+  //   setRefresh((prev) => !prev);
+  // }, []);
+
+  useEffect(() => {
+    setAttendanceByDates(contextAttendanceByDates || {});
+    setAttendanceByStudent(contextAttendanceByStudent || {});
+    setStudents(contextStudents || {});
+    setCalendarDates(() => {
+      const list = {};
+      Object.keys(attendanceByDates).forEach((date) => {
+        list[date] = {
+          selected: true,
+          selectedColor: "green",
+        };
+      });
+      return list;
+    });
+  }, [refresh]);
+
+  const toggleAttendance = (id, presentState) => {
+    setAttendanceByStudent((prev) => {
+      const dates = prev[id] || [];
+      const updatedDates = presentState
+        ? [...new Set([...dates, selectedDate])]
+        : dates.filter((d) => d !== selectedDate);
+      return { ...prev, [id]: updatedDates };
+    });
+
+    setAttendanceByDates((prev) => {
+      const currentList = Array.isArray(prev[selectedDate])
+        ? prev[selectedDate]
+        : [];
+      const updatedList = presentState
+        ? [...new Set([...currentList, id])]
+        : currentList.filter((studentId) => studentId !== id);
+      return { ...prev, [selectedDate]: updatedList };
+    });
+    setHasChanged(true);
+  };
+
+  const handleSubmit = async () => {
+    if (!Object.keys(attendanceByDates).length) return;
+    if (!Object.keys(attendanceByStudent).length) return;
+
+    await uploadAttendanceByDates(attendanceByDates);
+    await uploadAttendanceByStudent(attendanceByStudent);
+    console.log("Upload successful");
+
+    setRefresh((prev) => !prev);
+    setSelectedDate(null);
+    setHasChanged(false);
   };
 
   return (
     <ScrollView style={styles.main_container}>
       <View style={styles.section_container}>
         <Calendar
+          markedDates={calendarDates}
           onDayPress={(day) => {
             setSelectedDate(day.dateString);
+            setHasChanged(false);
           }}
-          markedDates={attendanceBydates}
-          markingType={"multi-dot"}
         />
       </View>
 
@@ -50,61 +98,17 @@ const AttendanceRecords = () => {
               key={id}
               Id={id}
               title={student.name}
-              currentState={(attendanceByStudents[id] || []).includes(
+              currentState={(attendanceByStudent[id] || []).includes(
                 selectedDate
               )}
-              onPress={(studentId, presentState) => {
-                setAttendanceByStudents((prev) => {
-                  const dates = prev[studentId] || [];
-                  const updatedDates = presentState
-                    ? [...dates, selectedDate]
-                    : dates.filter((d) => d !== selectedDate);
-
-                  return {
-                    ...prev,
-                    [studentId]: updatedDates,
-                  };
-                });
-
-                setAttendanceByDates((prev) => {
-                  const currentList = prev[selectedDate] || [];
-                  const updatedList = presentState
-                    ? [...new Set([...currentList, studentId])]
-                    : currentList.filter((id) => id !== studentId);
-
-                  return {
-                    ...prev,
-                    [selectedDate]: updatedList,
-                  };
-                });
-              }}
+              onPress={(presentState) => toggleAttendance(id, presentState)}
             />
           ))}
 
           <ActionButton
-            title={"Submit"}
-            handlePress={() => {
-              const hasAttendanceMarked = Object.values(
-                attendanceByStudents
-              ).some((dates) => dates?.includes(selectedDate));
-              if (hasAttendanceMarked) {
-                setAttendanceByDates((prev) => ({
-                  ...prev,
-                  [selectedDate]: {
-                    selected: true,
-                    selectedColor: "green",
-                  },
-                }));
-              } else {
-                setAttendanceByDates((prev) => {
-                  const updated = { ...prev };
-                  delete updated[selectedDate];
-                  return updated;
-                });
-              }
-              uploadData();
-              setSelectedDate(null);
-            }}
+            title="Submit"
+            handlePress={handleSubmit}
+            disabled={!hasChanged}
           />
         </View>
       )}
