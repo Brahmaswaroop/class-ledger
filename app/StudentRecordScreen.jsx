@@ -13,13 +13,11 @@ export default StudentRecordScreen = () => {
   const { students: contextStudents, refresh, setRefresh } = useAppData();
 
   useEffect(() => {
-    setStudents(contextStudents);
+    setStudents({ ...contextStudents });
   }, [refresh, contextStudents]);
 
   const uploadStudents = async () => {
-    console.log(students);
     if (!Object.keys(students).length) return;
-    setUploading(true);
     try {
       const result = await uploadAllStudents(students);
       console.log("Upload result:", result);
@@ -27,7 +25,6 @@ export default StudentRecordScreen = () => {
     } catch (e) {
       console.error("Upload failed", e);
     }
-    setUploading(false);
   };
 
   // Part 2: Handling the menu and popups
@@ -53,7 +50,7 @@ export default StudentRecordScreen = () => {
           onClose={() => {
             setShowInputPopup(false);
             setIsNewStudent(false);
-            setSelectedStudent(null);
+            setSelectedStudent({ id: null, data: {} });
           }}
           onSave={(updatedStudentsList) => {
             setStudents(updatedStudentsList);
@@ -68,7 +65,7 @@ export default StudentRecordScreen = () => {
           student={selectedStudent}
           onClose={() => {
             setShowDeletePopup(false);
-            setSelectedStudent(null);
+            setSelectedStudent({ id: null, data: {} });
           }}
           onDelete={(updatedStudentsList) => {
             setStudents(updatedStudentsList);
@@ -129,7 +126,9 @@ export default StudentRecordScreen = () => {
                 {Object.entries(student).map(([key, value]) => (
                   <Text key={id + key} style={styles.cardContent}>
                     {key}:{" "}
-                    {typeof value === "object" ? JSON.stringify(value) : value}
+                    {typeof value === "object" && value !== null
+                      ? JSON.stringify(value, null, 2)
+                      : String(value)}
                   </Text>
                 ))}
               </Card.Content>
@@ -139,9 +138,13 @@ export default StudentRecordScreen = () => {
         <FAB
           style={styles.fab}
           icon="plus"
-          onPress={() => openEditor()}
+          onPress={() => {
+            setIsNewStudent(true);
+            setShowInputPopup(true);
+          }}
           color="white"
           label="Add Student"
+          accessibilityLabel="Add Student"
         />
       </ScrollView>
     </>
@@ -180,10 +183,7 @@ const styles = StyleSheet.create({
   },
   fab: {
     padding: 8,
-    fontSize: 18,
     alignItems: "center",
-    fontWeight: "bold",
-    fontFamily: "calibri",
     backgroundColor: "#004e64",
     elevation: 4,
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
