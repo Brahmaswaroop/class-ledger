@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
 
-export default function ToggleButton({ currentState = false, title, onPress }) {
+export default function ToggleButton({ currentState, title, onPress }) {
   const handlePress = () => {
     onPress(!currentState);
   };
@@ -29,8 +29,8 @@ const styles = StyleSheet.create({
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
   },
   buttonText: {
-    fontSize: 16,
-    fontWeight: "500",
+    fontSize: 18,
+    fontWeight: "bold",
     fontFamily: "Arial",
     color: "#000",
   },

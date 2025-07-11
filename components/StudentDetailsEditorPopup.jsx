@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { StyleSheet } from "react-native";
 import { Dialog, Portal, TextInput, Button } from "react-native-paper";
 
@@ -42,11 +42,14 @@ export default StudentDetailsEditorPopup = ({
         setStudentDetails((prev) => ({ ...prev, [key]: text }))
       }
       mode="outlined"
-      returnKeyType="enter"
+      error={!studentDetails[key]}
       style={styles.text}
       {...options}
     />
   );
+  const classRef = useRef();
+  const dateRef = useRef();
+  const feesRef = useRef();
 
   return (
     <Portal>
@@ -56,19 +59,32 @@ export default StudentDetailsEditorPopup = ({
         </Dialog.Title>
         <Dialog.Content>
           {renderInput("Name", "name", {
-            placeholder: "3–20 characters",
-            autoFocus: { IsNewEntry },
+            placeholder: "3 to 20 characters",
+            autoFocus: IsNewEntry,
+            onSubmitEditing: () =>
+              setTimeout(() => classRef.current?.focus(), 100),
+            returnKeyType: "next",
           })}
           {renderInput("Class", "class", {
             placeholder: "between 1 to 12",
             keyboardType: "numeric",
+            ref: classRef,
+            returnKeyType: "next",
+            onSubmitEditing: () =>
+              setTimeout(() => dateRef.current?.focus(), 100),
           })}
           {renderInput("Date of Joining", "dateOfJoining", {
             placeholder: "YYYY/MM/DD",
+            ref: dateRef,
+            returnKeyType: "next",
+            onSubmitEditing: () =>
+              setTimeout(() => feesRef.current?.focus(), 100),
           })}
           {renderInput("Fees assigned", "feesAssigned", {
             placeholder: "Enter fees:",
             keyboardType: "numeric",
+            ref: feesRef,
+            returnKeyType: "done",
           })}
         </Dialog.Content>
         <Dialog.Actions>
